@@ -139,3 +139,24 @@ input:focus,textarea:focus,.button:focus-visible,.filter:focus-visible,a:focus-v
 .discord-copy{position:relative;z-index:2;max-width:680px}.discord-copy h2{font:500 clamp(40px,5vw,70px)/.94 'Space Grotesk';letter-spacing:-.07em;margin:20px 0 23px}.discord-copy h2 em{color:#bdb2ff;-webkit-text-stroke:0;text-shadow:0 0 30px rgba(130,109,255,.4)}.discord-copy p{max-width:540px;color:#b4b3c5;font-size:15px;line-height:1.75}.discord-stats{display:flex;gap:32px;margin:30px 0 28px}.discord-stats span{display:flex;flex-direction:column;gap:5px;border-left:1px solid rgba(255,255,255,.2);padding-left:13px}.discord-stats strong{font:500 20px 'Space Grotesk';color:#fff}.discord-stats small{font:9px 'DM Mono';letter-spacing:.1em;color:#9997ad}.button-discord{background:#8c7bff;color:#fff;box-shadow:0 10px 30px rgba(100,83,255,.25)}.button-discord:hover{background:#a89cff;box-shadow:0 14px 40px rgba(100,83,255,.4)}.discord-grid{position:absolute;inset:0;z-index:-1;opacity:.18;background-image:linear-gradient(rgba(255,255,255,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.14) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(90deg,transparent,black 55%,transparent)}
 @media(max-width:900px){.discord-panel{grid-template-columns:1fr;gap:0;padding:58px 46px}.discord-orb{width:145px;height:145px}.discord-orb span{font-size:70px}}
 @media(max-width:640px){.discord-panel{display:block;min-height:auto;margin-top:24px;padding:34px 22px 38px;border-radius:26px}.discord-panel:before{font-size:8px;top:18px;right:18px}.discord-orb{width:108px;height:108px;margin:18px auto 42px}.discord-orb span{font-size:53px}.discord-orb:before{inset:-14px}.discord-orb:after{inset:-25px}.discord-copy h2{font-size:43px}.discord-copy p{font-size:14px}.discord-stats{gap:17px;margin:25px 0}.discord-stats strong{font-size:17px}.discord-stats small{font-size:8px}.button-discord{width:100%}}
+
+/* Rynex / stronger violet signal */
+:root{--violet:#a978ff;--violet-bright:#dfc4ff}
+.section-kicker i{height:2px;width:30px;background:var(--violet-bright);box-shadow:0 0 15px rgba(169,120,255,.9)}
+.main-nav a.active:after,.main-nav a:hover:after{height:2px;background:var(--violet-bright);box-shadow:0 0 12px rgba(169,120,255,.75)}
+.pulse-dot{width:7px;height:7px;background:var(--violet-bright);box-shadow:0 0 15px var(--violet)}
+.hero:before{width:2px;background:linear-gradient(transparent,rgba(169,120,255,.4),transparent)}
+.hero-card{border:2px solid rgba(213,180,255,.72);box-shadow:-20px 25px 70px rgba(0,0,0,.45),0 0 95px rgba(157,104,255,.28)}
+.orbit{border-width:2px;border-color:rgba(213,180,255,.28)}
+.orbit-two{border-color:rgba(131,238,232,.22)}
+.ticker{box-shadow:0 0 26px rgba(157,104,255,.28)}
+.category-card:hover{border-width:2px}
+.product-visual{border-color:rgba(213,180,255,.2)}
+.product-card:hover .product-visual{border-width:2px;border-color:rgba(213,180,255,.82);box-shadow:0 0 26px rgba(157,104,255,.2)}
+.product-visual:before{border-width:2px;border-color:rgba(255,255,255,.1)}
+.manifesto,.newsletter,.page-hero,.discord-panel{border-width:2px;border-color:rgba(157,104,255,.34)}
+.manifesto-index i{width:2px;background:var(--violet-bright);box-shadow:0 0 15px var(--violet)}
+.search-field:focus-within{border-color:rgba(213,180,255,.75);box-shadow:0 0 18px rgba(157,104,255,.15)}
+.filter:hover,.filter.active{box-shadow:0 0 20px rgba(157,104,255,.25)}
+.button-discord{background:linear-gradient(135deg,#8b72ff,#b28cff);box-shadow:0 12px 34px rgba(112,84,255,.42),inset 0 1px rgba(255,255,255,.3)}
+.discord-panel{box-shadow:0 30px 90px rgba(0,0,0,.34),0 0 36px rgba(112,84,255,.12),inset 0 1px rgba(255,255,255,.12)}
