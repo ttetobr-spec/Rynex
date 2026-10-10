@@ -221,3 +221,6 @@ body:after{animation:aurora 10s ease-in-out infinite reverse}
 .discord-stats span:hover{transform:translateY(-7px);color:var(--violet-bright)}
 .toast{animation:border-pulse 2.2s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+/* Ajuste: textura estática e sutil, sem efeito de neve */
+body:before{animation:none!important;opacity:.018!important;mix-blend-mode:soft-light!important}
