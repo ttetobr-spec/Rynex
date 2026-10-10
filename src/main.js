@@ -25,7 +25,9 @@ const getCart = () => JSON.parse(localStorage.getItem('erynex-cart') || '[]').ma
 let cart = getCart();
 const saveCart = () => localStorage.setItem('erynex-cart', JSON.stringify(cart.map(item => ({ id: item.product.id, quantity: item.quantity }))));
 const cartCount = () => cart.reduce((total, item) => total + item.quantity, 0);
-const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+const siteBase = import.meta.env.BASE_URL.replace(/\/$/, '');
+const route = (path) => `${siteBase}${path === '/' ? '' : path}` || '/';
+const currentPath = window.location.pathname.replace(siteBase, '').replace(/\/$/, '') || '/';
 const currentProduct = products.find(product => currentPath === `/product/${product.id}`) || products[0];
 
 const productVisual = (product, large = false) => `<div class="product-visual ${product.tone} ${large ? 'large' : ''} visual-${product.visual}"><div class="visual-noise"></div><div class="visual-grid"></div><span class="visual-code">ER / ${product.code}</span><div class="visual-object"><span></span><i></i><b></b></div><div class="visual-scan"></div><strong>${product.code}</strong><em>${product.category}</em></div>`;
@@ -56,7 +58,9 @@ const cartItem = item => `<div class="cart-page-item"><div class="cart-thumb">${
 
 let content = currentPath === '/' ? homePage() : currentPath === '/shop' ? shopPage() : currentPath === '/about' ? aboutPage() : currentPath === '/cart' ? cartPage() : currentPath === '/contact' ? `<section class="page-hero section-shell"><span class="section-kicker"><i></i> Open channel</span><h1>Fale com<br><span>a gente.</span></h1><p>Para colaborações, dúvidas ou só para mandar um sinal, escreva para nós.</p></section><section class="contact-section section-shell"><form id="contact-form"><label>Seu nome<input required placeholder="Como podemos chamar você?" /></label><label>Seu e-mail<input required type="email" placeholder="seu@email.com" /></label><label>Mensagem<textarea required placeholder="Escreva seu sinal..."></textarea></label><button class="button button-light">Enviar mensagem ${icon('arrow', 16)}</button><p id="contact-note">Respondemos em até 48 horas.</p></form><div class="contact-aside"><span class="section-kicker"><i></i> E Rynex studio</span><h2>Sem ruído.<br><em>Direto ao ponto.</em></h2><p>São Paulo / Brasil<br>hello@erynex.com<br>@erynex.studio</p></div></section>` : currentPath.startsWith('/product/') ? productPage(currentProduct) : shopPage();
 const active = currentPath === '/' ? 'home' : currentPath === '/about' ? 'about' : 'shop';
-document.querySelector('#app').innerHTML = pageShell(content, active);
+const renderedPage = pageShell(content, active);
+const normalizePaths = (html) => siteBase ? html.replaceAll('href="/', `href="${siteBase}/`).replaceAll('src="/', `src="${siteBase}/`) : html;
+document.querySelector('#app').innerHTML = normalizePaths(renderedPage);
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 
@@ -88,9 +92,9 @@ document.addEventListener('click', event => {
   const option = event.target.closest('.option'); if (option) { $$('.option').forEach(item => item.classList.remove('active')); option.classList.add('active'); }
 });
 $('#search')?.addEventListener('input', () => filterCatalog($('.filter.active')?.dataset.filter || 'All'));
-$('[data-focus-search]')?.addEventListener('click', () => { if (currentPath !== '/shop') window.location.href = '/shop'; else $('#search')?.focus(); });
+$('[data-focus-search]')?.addEventListener('click', () => { if (currentPath !== '/shop') window.location.href = route('/shop'); else $('#search')?.focus(); });
 $('#newsletter')?.addEventListener('submit', event => { event.preventDefault(); $('#newsletter-note').textContent = 'Sinal captado. Você será o primeiro a saber do próximo drop.'; $('#newsletter-note').classList.add('success'); event.target.reset(); });
 $('#contact-form')?.addEventListener('submit', event => { event.preventDefault(); $('#contact-note').textContent = 'Mensagem recebida. Voltamos em breve.'; $('#contact-note').classList.add('success'); event.target.reset(); });
 document.addEventListener('mousemove', event => { document.documentElement.style.setProperty('--mouse-x', `${event.clientX}px`); document.documentElement.style.setProperty('--mouse-y', `${event.clientY}px`); });
-document.addEventListener('keydown', event => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); if (currentPath !== '/shop') window.location.href = '/shop'; else $('#search')?.focus(); } if (event.key === 'Escape') document.body.classList.remove('cart-open'); });
+document.addEventListener('keydown', event => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); if (currentPath !== '/shop') window.location.href = route('/shop'); else $('#search')?.focus(); } if (event.key === 'Escape') document.body.classList.remove('cart-open'); });
 if (currentPath === '/shop') { const params = new URLSearchParams(window.location.search); const category = params.get('category'); if (category) filterCatalog(category); }
