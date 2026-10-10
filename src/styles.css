@@ -19,3 +19,7 @@
 .manifesto-mark{display:grid;place-items:center;font-size:0;letter-spacing:0;-webkit-text-stroke:0;text-shadow:none}
 .manifesto-mark img{width:min(86%,360px);height:auto;aspect-ratio:1.22;object-fit:cover;object-position:center;opacity:.92;mix-blend-mode:screen;filter:saturate(1.25) contrast(1.12);border-radius:4px}
 @media(max-width:640px){.hero-card-symbol img{width:91%;height:70%}.manifesto-mark img{width:78%;max-width:280px}}
+
+/* Clean symbol treatment: no rectangular image block in the hero/manifesto */
+.hero-card-symbol img{width:72%;height:auto;aspect-ratio:1;object-fit:contain;border-radius:0;mix-blend-mode:screen;filter:drop-shadow(0 0 20px rgba(168,85,247,.45)) saturate(1.35) brightness(1.18)}
+.manifesto-mark img{width:72%;height:auto;aspect-ratio:1;object-fit:contain;border-radius:0;mix-blend-mode:screen;filter:drop-shadow(0 0 25px rgba(168,85,247,.38)) saturate(1.35) brightness(1.18)}
