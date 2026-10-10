@@ -14,3 +14,4 @@
 - [x] Implementar uma entrada de checkout demonstrativa e claramente sinalizada como experiência de protótipo.
 - [x] Garantir layout responsivo otimizado para celulares, tablets e desktops.
 - [x] Aplicar animações, transições e microinterações em menus, botões, cards e rolagem, preservando fluidez e usabilidade.
+- [x] Substituir os monogramas ER do hero e do manifesto pela logo oficial enviada pelo usuário.
