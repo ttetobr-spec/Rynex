@@ -273,3 +273,45 @@ body:after{display:none}
 @keyframes reference-slide-in{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
 @media(max-width:800px){.reference-header{padding:0 18px}.reference-header .header-search{width:38px;padding:0;justify-content:center;background:transparent;border:0}.reference-header .header-search span{display:none}.support-button{display:none}.reference-cart{width:36px;padding:0;justify-content:center;background:transparent;color:#f0f0f4}.reference-cart span{display:none}.login-button{display:none}.reference-header .menu-button{display:block}.reference-hero{height:610px}.hero-carousel{width:calc(100% - 54px)}.hero-slide{inset:36px 0 40px;grid-template-columns:1fr;align-content:center;gap:7px}.slide-copy{padding:0;max-width:450px}.slide-copy h1{font-size:clamp(52px,13vw,76px);margin:16px 0}.slide-copy p{font-size:13px}.slide-actions{margin-top:20px}.slide-art{height:250px}.slide-art .product-visual{height:240px;max-width:390px}.hero-prev{left:-31px}.hero-next{right:-31px}.hero-dots{bottom:17px}.reference-section{width:calc(100% - 42px)}.reference-product-grid{grid-template-columns:repeat(2,1fr);gap:10px}.reference-product-grid .product-visual{height:185px}.reference-promo{width:calc(100% - 42px);grid-template-columns:1fr;padding:32px 28px;margin-top:48px}.promo-symbol{display:none}}
 @media(max-width:480px){.reference-header .brand-name{font-size:11px}.reference-header .brand-name small{font-size:6px}.reference-hero{height:595px}.hero-carousel{width:calc(100% - 42px)}.slide-copy h1{font-size:53px}.slide-copy p{max-width:290px}.slide-art{height:215px;margin-top:7px}.slide-art .product-visual{height:210px}.slide-art-label{right:3%;bottom:-4px}.reference-section{padding-top:29px}.reference-section-head h2{font-size:20px}.reference-section-head{margin-bottom:16px}.reference-product-grid .product-visual{height:155px}.reference-product-grid .product-meta{padding:10px 9px 11px}.reference-product-grid .product-meta h3{font-size:12px}.reference-product-grid .product-meta>strong{font-size:10px}.reference-promo{min-height:250px}}
+
+/* Mobile polish: every featured card is immediately readable and touch-friendly */
+@media(max-width:640px){
+  html,body{overflow-x:hidden}
+  .reference-header{height:58px;padding:0 14px}
+  .reference-header .brand{gap:8px;min-width:0}
+  .reference-header .brand-logo{width:30px;height:30px}
+  .reference-header .header-actions{gap:5px}
+  .reference-header .header-search,.reference-cart,.reference-header .menu-button{width:38px;height:38px}
+  .reference-header .menu-button{font-size:20px;padding:0}
+  .reference-hero{height:570px}
+  .hero-carousel{width:calc(100% - 34px)}
+  .hero-slide{inset:31px 0 34px}
+  .slide-copy h1{font-size:clamp(49px,13.5vw,60px);line-height:.94;margin:15px 0 13px}
+  .slide-copy p{font-size:12px;line-height:1.55;max-width:285px}
+  .slide-actions{gap:16px;margin-top:18px}
+  .slide-actions .button{padding:12px 15px;font-size:11px}
+  .slide-meta{font-size:10px;gap:6px}.slide-meta i{width:45px}
+  .slide-art{height:210px;margin-top:0}
+  .slide-art .product-visual{height:205px;width:calc(100% - 14px);border-radius:11px}
+  .hero-prev,.hero-next{width:32px;height:32px;font-size:21px}.hero-prev{left:-19px}.hero-next{right:-19px}
+  .hero-dots{bottom:12px}
+  .reference-section{width:calc(100% - 30px);padding-top:27px}
+  .reference-section-head{align-items:center;margin-bottom:14px}
+  .reference-section-head h2{font-size:19px}.reference-section-head .section-kicker{font-size:8px}
+  .reference-product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .reference-product-grid .product-card,.reference-product-grid .reveal{opacity:1!important;transform:none!important;visibility:visible!important}
+  .reference-product-grid .product-visual{height:160px}
+  .reference-product-grid .product-meta h3{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .reference-product-grid .quick-add{right:8px;bottom:8px}
+  .reference-promo{width:calc(100% - 30px);margin-top:38px;padding:27px 21px;border-radius:14px}
+  .reference-promo h2{font-size:36px}.reference-promo p{font-size:12px;max-width:290px}
+  .reference-promo .button{margin-top:15px}
+  .reference-home>.newsletter{width:calc(100% - 30px);margin-top:20px;padding:35px 21px 39px;border-radius:18px}
+  .reference-home>.newsletter h2{font-size:39px;line-height:.94}
+  .reference-home>.newsletter form{display:flex;flex-direction:column;align-items:stretch;gap:12px;margin-top:26px}
+  .reference-home>.newsletter form input{min-width:0;width:100%;height:42px}
+  .reference-home>.newsletter form button{width:100%;height:42px}
+  .reference-home>.newsletter .form-note{font-size:9px;margin-top:16px}
+  .reference-home~.site-footer{margin-top:0}
+}
+@media(max-width:360px){.reference-header .brand-name{font-size:10px}.reference-header .brand-name small{font-size:5px}.slide-copy h1{font-size:46px}.reference-product-grid .product-visual{height:145px}}

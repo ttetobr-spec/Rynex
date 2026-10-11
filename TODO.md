@@ -1,1 +1,1 @@
-- [x] Reestruturar a home com cabeçalho compacto de loja, busca central, carrinho destacado, login, hero em carrossel com rotação automática, fundo atmosférico e vitrine de Mais vendidos inspirada na referência visual enviada.
+- [x] Refinar a experiência mobile com cabeçalho compacto, hero/carrossel bem encaixado, cards de produtos sempre visíveis, controles maiores para toque, newsletter vertical e espaçamento confortável.
