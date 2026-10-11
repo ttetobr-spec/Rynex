@@ -1,8 +1,1 @@
-- [x] O bot oferece comandos administrativos para adicionar, editar, listar e remover produtos com nome, preço, categoria, imagem, URL e descrição.
-- [x] O bot permite configurar categorias, textos básicos do site e um cupom percentual, incluindo desconto de 100% para teste.
-- [x] O bot expõe API de cadastro/login por e-mail, catálogo público e criação de pedidos com validação server-side do cupom.
-- [x] Um pedido com total zero é marcado como pago e tenta criar automaticamente um canal privado de entrega no Discord.
-- [x] Pedidos com total maior que zero ficam aguardando pagamento manual e podem ser confirmados pelo comando `/pedido-aceitar`.
-- [x] Mensagens enviadas pelo site são encaminhadas pelo bot ao canal Discord do pedido; mensagens do canal são armazenadas para leitura no site.
-- [ ] Configurar token do bot, chave Pix real e hospedagem persistente; estes itens dependem dos segredos que o proprietário ainda vai fornecer.
-- [ ] Escolher e integrar um provedor de pagamento automático; a primeira fase deliberadamente não simula confirmação de pagamento.
+- [x] Corrigir o GitHub Pages para suportar links internos como /Rynex/cart, /Rynex/shop e /Rynex/product/:id usando base de assets e fallback 404.html.
