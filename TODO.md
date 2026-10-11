@@ -1,1 +1,1 @@
-- [x] Refinar a experiência mobile com cabeçalho compacto, hero/carrossel bem encaixado, cards de produtos sempre visíveis, controles maiores para toque, newsletter vertical e espaçamento confortável.
+- [x] Corrigir o GitHub Pages para suportar links internos como /Rynex/cart, /Rynex/shop e /Rynex/product/:id usando base de assets e fallback 404.html.
