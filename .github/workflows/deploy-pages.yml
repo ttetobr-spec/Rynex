@@ -29,6 +29,8 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+        env:
+          VITE_RYNEX_API_URL: ${{ vars.RYNEX_API_URL }}
       - name: SPA fallback
         run: cp dist/index.html dist/404.html
       - name: Upload artifact
