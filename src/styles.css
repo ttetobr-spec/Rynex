@@ -331,3 +331,52 @@ body:after{display:none}
 .auth-page-links{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font:10px 'DM Mono';color:var(--muted)}.auth-page-links a{color:var(--violet-bright);text-decoration:none}.auth-page-links a:hover{color:var(--text)}.auth-secondary-link{margin-top:12px}.account-dashboard{padding:14px 0 100px}.account-nav{display:flex;align-items:center;gap:5px;overflow-x:auto;margin:0 0 28px;border-bottom:1px solid var(--line)}.account-nav a{flex:0 0 auto;padding:13px 15px;color:var(--muted);text-decoration:none;font:10px 'DM Mono';letter-spacing:.04em;border-bottom:2px solid transparent;transition:color .18s,border-color .18s}.account-nav a:hover,.account-nav a.active{color:var(--text);border-bottom-color:var(--violet-bright)}.account-dashboard-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(240px,.75fr);gap:44px;align-items:start}.account-card{width:100%;max-width:none}.account-card h2{margin-bottom:12px}.account-card form{margin-top:19px}.account-card .profile-avatar-control{margin-top:20px}.account-aside{padding-top:36px}.account-aside .arrow-link{display:inline-flex;margin-top:15px}.account-settings-stack{display:grid;gap:16px}.settings-description{margin:0 0 12px;color:var(--muted);font:11px/1.65 'DM Sans'}.logout-card{border-color:rgba(255,94,144,.2)}.logout-card .section-kicker{color:var(--pink)}.auth-card .auth-note.success{color:var(--green)}@media(max-width:900px){.account-dashboard-grid{grid-template-columns:1fr;gap:28px}.account-aside{padding:30px 0 0}.account-dashboard{padding-top:8px}}@media(max-width:640px){.account-nav{margin-bottom:20px}.account-nav a{padding:12px 11px;font-size:9px}.account-dashboard-grid{gap:18px}.auth-page-links{font-size:9px}}
 
 .orders-list{display:grid;gap:14px}.order-history-card{width:100%;max-width:none;padding:24px}.order-history-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:13px}.order-history-card h2{margin:6px 0 0;font:500 22px 'Space Grotesk';letter-spacing:-.035em}.order-history-items{min-height:18px;color:var(--muted);font:11px/1.6 'DM Sans';overflow-wrap:anywhere}.order-history-foot{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:17px;padding-top:15px;border-top:1px solid var(--line)}.order-history-foot>strong{font:500 17px 'Space Grotesk';color:var(--text)}.order-history-foot .button{height:40px;padding:0 13px}.order-history-card>time{display:block;margin-top:12px;color:var(--muted);font:9px 'DM Mono'}.order-history-empty{padding:30px}.order-history-empty h2{margin:15px 0 8px}.order-history-empty>p{margin-bottom:20px;color:var(--muted);font:12px/1.6 'DM Sans'}@media(max-width:640px){.order-history-card{padding:19px}.order-history-head{align-items:flex-start;flex-direction:column}.order-history-foot{align-items:flex-start;flex-direction:column}}
+
+
+/* Rynex readability pass: make small interface copy comfortable on mobile and desktop. */
+body { font-size: 16px; line-height: 1.6; }
+.announcement { font-size: 12px; letter-spacing: .07em; }
+.announcement button { font-size: 12px; }
+.section-kicker, .reference-section-head .section-kicker { font-size: 12px; letter-spacing: .1em; }
+.brand-name small { font-size: 10px; }
+.main-nav a, .footer-links a { font-size: 14px; }
+.header-search { font-size: 13px; }
+.header-search kbd { font-size: 11px; }
+.button, .slide-actions .button { font-size: 13px; }
+.text-link, .arrow-link { font-size: 13px; }
+.hero-proof p { font-size: 13px; }
+.hero-proof small { font-size: 11px; }
+.floating-chip, .hero-card-top, .hero-card-bottom { font-size: 11px; }
+.hero-side-note { font-size: 10px; }
+.category-number { font-size: 12px; }
+.category-card p { font-size: 12px; }
+.filter, .catalog-toolbar, .search-field input, .sort-button { font-size: 12px; }
+.product-tag, .reference-product-grid .product-tag { font-size: 10px; }
+.eyebrow { font-size: 11px; }
+.product-meta h3 { font-size: 17px; }
+.product-meta strong { font-size: 14px; }
+.reference-product-grid .product-meta h3 { font-size: 15px; }
+.reference-product-grid .product-meta > strong { font-size: 13px; }
+.visual-code, .product-visual > em { font-size: 11px; }
+.site-footer > p { font-size: 13px; }
+.cart-item-info > strong, .cart-page-item > div:nth-child(2) > strong { font-size: 13px; }
+.cart-empty p, .cart-page-empty p { font-size: 14px; }
+.cart-summary > div, .cart-page-summary > div { font-size: 13px; }
+.cart-summary > p, .cart-page-summary > p { font-size: 12px; }
+.contact-section label { font-size: 12px; }
+.auth-card label, .checkout-form label, .order-message-form label, .pix-copy-area label { font-size: 12px; }
+.auth-card small, .checkout-form small { font-size: 11px; }
+.auth-note, .order-note { font-size: 12px; }
+.auth-divider { font-size: 11px; }
+.auth-page-links, .account-nav a { font-size: 12px; }
+.order-link-actions .button { font-size: 11px; }
+.settings-description { font-size: 13px; }
+@media (max-width: 600px) {
+  .announcement { font-size: 11px; letter-spacing: .04em; }
+  .announcement button { font-size: 11px; }
+  .section-kicker, .reference-section-head .section-kicker { font-size: 11px; }
+  .reference-product-grid .product-meta h3 { font-size: 14px; }
+  .product-meta strong { font-size: 13px; }
+  .auth-card label, .checkout-form label, .order-message-form label, .pix-copy-area label { font-size: 12px; }
+  .auth-note, .order-note, .cart-page-summary > p, .cart-summary > p { font-size: 12px; }
+}
