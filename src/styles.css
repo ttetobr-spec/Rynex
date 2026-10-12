@@ -539,3 +539,14 @@ body:after{display:none}
   .reference-hero.fullscreen-banner .hero-dots { bottom: 13px; }
   .reference-home .reference-product-grid { grid-template-columns: minmax(0,1fr); }
 }
+
+
+/* Preserve the supplied panoramic product art in the full-screen hero. */
+.reference-hero.fullscreen-banner .slide-art { height: auto; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 11px; margin: 0; }
+.reference-hero.fullscreen-banner .hero-product-banner-image { display: block; width: 100%; max-width: 760px; height: auto; max-height: 60vh; object-fit: contain; border-radius: 12px; filter: drop-shadow(0 24px 44px rgba(0,0,0,.44)); }
+.reference-hero.fullscreen-banner .slide-art-label { position: static; align-self: flex-end; max-width: 100%; margin: 0; }
+@media (max-width: 760px) {
+  .reference-hero.fullscreen-banner .slide-art { height: auto; min-height: 0; }
+  .reference-hero.fullscreen-banner .hero-product-banner-image { max-height: 27svh; border-radius: 9px; }
+  .reference-hero.fullscreen-banner .slide-art-label { font-size: 9px; }
+}
