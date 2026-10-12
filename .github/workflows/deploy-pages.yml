@@ -30,7 +30,8 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_RYNEX_API_URL: ${{ vars.RYNEX_API_URL }}
+          # Fallback temporário para testes; defina RYNEX_API_URL quando houver backend permanente.
+          VITE_RYNEX_API_URL: ${{ vars.RYNEX_API_URL || 'https://3001-i45mqln9u2vvuyrvapx47-571631ad.us4.manus.computer' }}
       - name: SPA fallback
         run: cp dist/index.html dist/404.html
       - name: Upload artifact
