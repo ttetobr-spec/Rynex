@@ -476,3 +476,16 @@ body:after{display:none}
   .order-link-actions { align-items: stretch; }
   .order-link-actions .button { width: 100%; }
 }
+
+
+/* Blox Fruits digital account product and zero-stock state. */
+.visual-account .product-image { object-fit: contain; padding: 10px; background: #0b0a12; }
+.product-card.out-of-stock .product-visual { border-color: rgba(245, 158, 11, .28); }
+.product-tag.is-out-of-stock { background: rgba(245, 158, 11, .92); color: #1a1206; }
+.quick-add.is-disabled { opacity: .78; cursor: not-allowed; background: rgba(10, 8, 16, .8); color: #d4c9b5; }
+.quick-add.is-disabled:hover { transform: none; }
+.button:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
+.stock-notice { margin-top: 12px; color: #f5c16c; font-size: 14px; line-height: 1.5; }
+.product-digital-note { display: flex; flex-direction: column; gap: 5px; margin: 22px 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.025); }
+.product-digital-note strong { color: var(--text); font-size: 14px; }
+.product-digital-note span { color: var(--muted); font-size: 13px; }
