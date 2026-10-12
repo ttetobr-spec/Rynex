@@ -27,6 +27,9 @@
 - Em Minha conta, permitir escolher, pré-visualizar, substituir e remover uma foto; o navegador reduz a imagem e a API valida formato e tamanho antes de persistir no perfil.
 - No checkout, criar o pedido e gerar automaticamente QR Pix estático e código copia-e-cola pelo mesmo gerador usado em `/gerarpix`; persistir a cobrança no pedido e permitir regenerá-la após a configuração da chave.
 - Fornecer link de acompanhamento do pedido com autorização da conta. Pix estático não produz URL universal de pagamento nem confirma o crédito automaticamente; a confirmação continua manual no bot.
+- Separar a autenticação e a conta em rotas próprias: `/login`, `/register`, `/account` e `/settings`, preservando o cabeçalho e a direção visual da loja.
+- Manter perfil e foto na página Minha conta; concentrar alteração de senha, navegação da conta e logout em Configurações. A troca de senha exige a senha atual; recuperação por e-mail exige um serviço de envio que ainda não está configurado.
+- Separar `/orders` de `/cart`: a página de pedidos recebe apenas o histórico do usuário autenticado, sem expor cobrança ou conversas de outras contas.
 
 ## Estrutura
 

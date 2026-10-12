@@ -1,4 +1,9 @@
-- [x] Corrigir o GitHub Pages para suportar links internos como /Rynex/cart, /Rynex/shop e /Rynex/product/:id usando base de assets e fallback 404.html.
-- [x] Em Minha conta, escolher, pré-visualizar, substituir ou remover uma foto de perfil; comprimir a imagem no navegador, validar o tipo e o tamanho no servidor, salvar junto à conta e exibi-la no cabeçalho e na conta após recarregar.
-- [x] Ao criar um pedido pago, gerar automaticamente o QR Pix estático e o código copia-e-cola com o mesmo gerador de /gerarpix; salvar a cobrança no pedido, permitir gerar novamente após configurar Pix, exibir QR/código no acompanhamento e oferecer link seguro do pedido.
-- [x] Manter a confirmação do pagamento manual: Pix estático não confirma recebimento nem cria um link de pagamento universal; o canal de entrega só é aberto depois da confirmação administrativa no Discord.
+- [x] Corrigir o GitHub Pages para suportar links internos usando base de assets e fallback 404.html.
+- [x] Em Minha conta, escolher, pré-visualizar, substituir ou remover uma foto; comprimir no navegador, validar no servidor, salvar no perfil e mostrar no cabeçalho.
+- [x] Ao criar pedido pago, gerar QR Pix estático e copia-e-cola pelo mesmo gerador do `/gerarpix`; salvar e exibir a cobrança no acompanhamento do pedido.
+- [x] Manter confirmação manual: Pix estático não confirma recebimento nem fornece URL universal de pagamento; o canal só é aberto após confirmação administrativa.
+- [x] Separar login, cadastro, Minha conta e Configurações em páginas próprias; manter o carrinho e criar uma página própria de Meus pedidos.
+- [x] Em Configurações, permitir trocar a senha com senha atual, nova senha e confirmação; permitir sair e invalidar a sessão atual.
+- [x] Criar histórico privado em `/orders`, limitado aos pedidos da conta autenticada; links abrem o pedido e sua cobrança Pix.
+
+Nota: recuperação de senha esquecida por e-mail ainda depende de configurar um serviço seguro de envio; a troca de senha autenticada está implementada.
