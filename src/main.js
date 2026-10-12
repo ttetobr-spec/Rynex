@@ -4,6 +4,7 @@ const API_BASE = window.__RYNEX_API_URL__ || import.meta.env.VITE_RYNEX_API_URL 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const SESSION_KEY = 'rynex-session';
 const getSession = () => { try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch { return null; } };
+let profileAvatarDraft = getSession()?.user?.avatar || null;
 const loadCatalog = async () => {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), 900);
@@ -58,7 +59,11 @@ const currentProduct = products.find(product => currentPath === `/product/${prod
 const productVisual = (product, large = false) => `<div class="product-visual ${product.tone} ${large ? 'large' : ''} visual-${product.visual || 'tee'}">${product.imageUrl ? `<img class="product-image" src="${product.imageUrl}" alt="${product.name}" loading="lazy" />` : ''}<div class="visual-noise"></div><div class="visual-grid"></div><span class="visual-code">ER / ${product.code}</span>${product.imageUrl ? '' : `<div class="visual-object"><span></span><i></i><b></b></div>`}<div class="visual-scan"></div><strong>${product.code}</strong><em>${product.category}</em></div>`;
 const productCard = (product, index = 0) => { const href = product.url || route(`/product/${product.id}`); return `<article class="product-card reveal" data-category="${product.category}" data-id="${product.id}" style="--delay:${index * 60}ms"><a href="${href}" class="card-image-wrap"><button class="wishlist" type="button" aria-label="Favoritar">♡</button>${productVisual(product)}<span class="product-tag">${product.tag}</span><button class="quick-add" type="button" data-add="${product.id}">${icon('plus', 15)}<span>Adicionar</span></button></a><div class="product-meta"><div><span class="eyebrow">${product.category}</span><h3><a href="${href}">${product.name}</a></h3></div><strong>${money(product.price)}</strong></div></article>`; };
 const logo = `<img class="brand-logo" src="${asset('/erynex-logo.png')}" alt="E Rynex logo" />`;
-const header = (active = '') => `<div class="announcement"><span class="pulse-dot"></span><span>DROP 04.26</span><b>ENTRE NO FUTURO ANTES DE TODO MUNDO</b><a href="${route('/shop')}">Explorar agora ${icon('arrow', 14)}</a></div><header class="site-header reference-header"><a href="${route('/')}" class="brand" aria-label="E Rynex início">${logo}<span class="brand-name">E ${escapeHtml(storeSettings.brandName || 'Rynex').toUpperCase()}<small>THE NEXT DROP</small></span></a><nav class="main-nav"><a class="${active === 'home' ? 'active' : ''}" href="${route('/')}">Início</a><a class="${active === 'shop' ? 'active' : ''}" href="${route('/shop')}">Drops</a><a class="${active === 'about' ? 'active' : ''}" href="${route('/about')}">Manifesto</a><a href="${route('/contact')}">Contato</a></nav><div class="header-actions"><button class="header-search" data-focus-search>${icon('search', 19)}<span>Pesquisar produto</span></button><button class="support-button" aria-label="Suporte">${icon('headphones', 22)}</button><a class="cart-button reference-cart" href="${route('/cart')}">${icon('bag', 20)}<span>Carrinho</span><b class="cart-count ${cartCount() ? 'visible' : ''}">${cartCount()}</b></a><a class="login-button" href="${route('/login')}">${getSession() ? 'Minha conta' : 'Entrar'}</a><button class="menu-button" data-menu aria-label="Abrir menu">☰</button></div></header>`;
+const avatarMarkup = (user, className = 'account-avatar') => user?.avatar
+  ? `<img class="${className}" src="${escapeHtml(user.avatar)}" alt="Foto de perfil" />`
+  : `<span class="${className} avatar-fallback" aria-hidden="true">${escapeHtml(String(user?.name || user?.username || 'R').trim().slice(0, 1).toUpperCase() || 'R')}</span>`;
+const headerAccount = () => { const user = getSession()?.user; return user ? `${avatarMarkup(user, 'header-avatar')}<span>Minha conta</span>` : 'Entrar'; };
+const header = (active = '') => `<div class="announcement"><span class="pulse-dot"></span><span>DROP 04.26</span><b>ENTRE NO FUTURO ANTES DE TODO MUNDO</b><a href="${route('/shop')}">Explorar agora ${icon('arrow', 14)}</a></div><header class="site-header reference-header"><a href="${route('/')}" class="brand" aria-label="E Rynex início">${logo}<span class="brand-name">E ${escapeHtml(storeSettings.brandName || 'Rynex').toUpperCase()}<small>THE NEXT DROP</small></span></a><nav class="main-nav"><a class="${active === 'home' ? 'active' : ''}" href="${route('/')}">Início</a><a class="${active === 'shop' ? 'active' : ''}" href="${route('/shop')}">Drops</a><a class="${active === 'about' ? 'active' : ''}" href="${route('/about')}">Manifesto</a><a href="${route('/contact')}">Contato</a></nav><div class="header-actions"><button class="header-search" data-focus-search>${icon('search', 19)}<span>Pesquisar produto</span></button><button class="support-button" aria-label="Suporte">${icon('headphones', 22)}</button><a class="cart-button reference-cart" href="${route('/cart')}">${icon('bag', 20)}<span>Carrinho</span><b class="cart-count ${cartCount() ? 'visible' : ''}">${cartCount()}</b></a><a class="login-button" href="${route('/login')}">${headerAccount()}</a><button class="menu-button" data-menu aria-label="Abrir menu">☰</button></div></header>`;
 const footer = `<footer class="site-footer section-shell"><a href="${route('/')}" class="brand">${logo}<span class="brand-name">E ${escapeHtml(storeSettings.brandName || 'Rynex').toUpperCase()}<small>THE NEXT DROP</small></span></a><p>Para quem não nasceu para o óbvio.</p><div class="footer-links"><a href="${route('/about')}">Manifesto</a><a href="${route('/shop')}">Drops</a><a href="${route('/contact')}">Contato</a><a href="#">Instagram ↗</a></div><span class="copyright">© 2026 E Rynex</span></footer>`;
 const cartDrawer = `<div class="cart-overlay" data-close-cart></div><aside class="cart-drawer" aria-label="Carrinho de compras"><div class="drawer-head"><div><span class="eyebrow">YOUR FREQUENCY</span><h2>Seu carrinho <span class="cart-count-text">(${cartCount()})</span></h2></div><button class="icon-button" data-close-cart>${icon('close', 21)}</button></div><div class="cart-items" id="cart-items"></div><div class="cart-empty ${cart.length ? 'hidden' : ''}" id="cart-empty"><div class="empty-bag">${icon('bag', 30)}</div><h3>Seu carrinho está vazio.</h3><p>Adicione um drop para começar sua próxima frequência.</p><a class="button button-outline" href="${route('/shop')}">Explorar drops</a></div><div class="cart-summary ${cart.length ? 'visible' : ''}" id="cart-summary"><div><span>Subtotal</span><strong id="cart-subtotal">${money(cart.reduce((total, item) => total + item.product.price * item.quantity, 0))}</strong></div><p>Frete calculado no checkout</p><button class="button button-light checkout-button" data-checkout>Ir para checkout ${icon('arrow', 16)}</button></div></aside>`;
 const pageShell = (content, active) => `<div class="cursor-glow"></div>${header(active)}<main>${content}</main>${footer}${cartDrawer}<div class="toast" id="toast"><span>✦</span><p>Adicionado ao carrinho</p></div>`;
@@ -66,7 +71,7 @@ const pageShell = (content, active) => `<div class="cursor-glow"></div>${header(
 function loginPage() {
   const session = getSession();
   const account = session?.user;
-  return `<section class="page-hero auth-hero section-shell"><span class="section-kicker"><i></i> Rynex account</span><h1>${account ? 'Sua<br><span>conta.</span>' : 'Entre no<br><span>seu canal.</span>'}</h1><p>${account ? 'Atualize seus dados e preferências de acesso.' : 'Use seu e-mail para acompanhar pedidos, conversar com a equipe e receber sua entrega manual.'}</p></section><section class="auth-section section-shell"><div class="auth-card"><span class="section-kicker"><i></i> ${account ? 'Minha conta' : 'Acesso seguro'}</span>${account ? `<h2>Olá, ${escapeHtml(account.name || account.username)}.</h2><form id="profile-form"><label>Nome<input name="name" value="${escapeHtml(account.name || '')}" minlength="2" maxlength="100" required /></label><label>Nome de usuário<input name="username" value="${escapeHtml(account.username || '')}" minlength="3" maxlength="40" required /></label><label>E-mail<input name="email" type="email" value="${escapeHtml(account.email || '')}" required /></label><div class="auth-divider"><span>alterar senha (opcional)</span></div><label>Senha atual (necessária para mudar e-mail/senha)<input name="currentPassword" type="password" autocomplete="current-password" /></label><label>Nova senha<input name="newPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Deixe em branco para manter" /></label><button class="button button-light full" type="submit">Salvar alterações ${icon('arrow', 16)}</button><p id="profile-note" class="auth-note">Para mudar e-mail ou senha, confirme sua senha atual.</p></form><button class="button button-outline full account-logout" type="button" id="logout-button">Sair da conta</button>` : `<h2>Entrar na conta</h2><form id="login-form"><label>E-mail<input name="email" type="email" placeholder="seu@gmail.com" required /></label><label>Senha<input name="password" type="password" autocomplete="current-password" minlength="8" required /></label><button class="button button-light full" type="submit">Entrar ${icon('arrow', 16)}</button><p id="login-note" class="auth-note">A senha é validada pelo servidor e não fica no navegador.</p></form><div class="auth-divider"><span>ou crie sua conta</span></div><form id="register-form"><label>Nome<input name="name" placeholder="Como podemos chamar você?" required /></label><label>Nome de usuário<input name="username" placeholder="rynex-user" required /></label><label>Gmail / e-mail<input name="email" type="email" placeholder="seu@gmail.com" required /></label><label>Senha<input name="password" type="password" autocomplete="new-password" minlength="8" required /></label><button class="button button-outline full" type="submit">Criar conta ${icon('arrow', 16)}</button><p id="register-note" class="auth-note">Use uma senha com pelo menos 8 caracteres.</p></form>`}</div><div class="auth-aside"><span class="section-kicker"><i></i> Seu pedido, sem ruído</span><h2>Do pagamento<br><em>à entrega.</em></h2><p>O pedido fica registrado, a equipe recebe um canal privado no Discord e a conversa aparece no site e no atendimento.</p></div></section>`;
+  return `<section class="page-hero auth-hero section-shell"><span class="section-kicker"><i></i> Rynex account</span><h1>${account ? 'Sua<br><span>conta.</span>' : 'Entre no<br><span>seu canal.</span>'}</h1><p>${account ? 'Atualize seus dados e preferências de acesso.' : 'Use seu e-mail para acompanhar pedidos, conversar com a equipe e receber sua entrega manual.'}</p></section><section class="auth-section section-shell"><div class="auth-card"><span class="section-kicker"><i></i> ${account ? 'Minha conta' : 'Acesso seguro'}</span>${account ? `<h2>Olá, ${escapeHtml(account.name || account.username)}.</h2><div class="profile-avatar-control"><div class="profile-avatar-preview" id="avatar-preview">${avatarMarkup(account, 'profile-avatar-image')}</div><div class="profile-avatar-tools"><label class="avatar-pick-label" for="avatar-file">Escolher foto</label><input id="avatar-file" type="file" accept="image/png,image/jpeg,image/webp" hidden /><button class="avatar-remove-button" id="remove-avatar" type="button">Remover foto</button><p class="avatar-help">PNG, JPG ou WEBP; a imagem é ajustada automaticamente.</p><p class="auth-note" id="avatar-note" aria-live="polite">Até 10 MB na seleção; salvamos uma versão comprimida de até 180 KB.</p></div></div><form id="profile-form"><label>Nome<input name="name" value="${escapeHtml(account.name || '')}" minlength="2" maxlength="100" required /></label><label>Nome de usuário<input name="username" value="${escapeHtml(account.username || '')}" minlength="3" maxlength="40" required /></label><label>E-mail<input name="email" type="email" value="${escapeHtml(account.email || '')}" required /></label><div class="auth-divider"><span>alterar senha (opcional)</span></div><label>Senha atual (necessária para mudar e-mail/senha)<input name="currentPassword" type="password" autocomplete="current-password" /></label><label>Nova senha<input name="newPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Deixe em branco para manter" /></label><button class="button button-light full" type="submit">Salvar alterações ${icon('arrow', 16)}</button><p id="profile-note" class="auth-note">Para mudar e-mail ou senha, confirme sua senha atual.</p></form><button class="button button-outline full account-logout" type="button" id="logout-button">Sair da conta</button>` : `<h2>Entrar na conta</h2><form id="login-form"><label>E-mail<input name="email" type="email" placeholder="seu@gmail.com" required /></label><label>Senha<input name="password" type="password" autocomplete="current-password" minlength="8" required /></label><button class="button button-light full" type="submit">Entrar ${icon('arrow', 16)}</button><p id="login-note" class="auth-note">A senha é validada pelo servidor e não fica no navegador.</p></form><div class="auth-divider"><span>ou crie sua conta</span></div><form id="register-form"><label>Nome<input name="name" placeholder="Como podemos chamar você?" required /></label><label>Nome de usuário<input name="username" placeholder="rynex-user" required /></label><label>Gmail / e-mail<input name="email" type="email" placeholder="seu@gmail.com" required /></label><label>Senha<input name="password" type="password" autocomplete="new-password" minlength="8" required /></label><button class="button button-outline full" type="submit">Criar conta ${icon('arrow', 16)}</button><p id="register-note" class="auth-note">Use uma senha com pelo menos 8 caracteres.</p></form>`}</div><div class="auth-aside"><span class="section-kicker"><i></i> Seu pedido, sem ruído</span><h2>Do pagamento<br><em>à entrega.</em></h2><p>O pedido fica registrado, a equipe recebe um canal privado no Discord e a conversa aparece no site e no atendimento.</p></div></section>`;
 }
 
 function homePage() {
@@ -84,22 +89,31 @@ function productPage(product) {
   return `<section class="breadcrumb section-shell"><a href="${route('/shop')}">Drops</a><span>/</span><span>${product.name}</span></section><section class="product-detail section-shell"><div class="detail-visual">${productVisual(product, true)}<span class="detail-stamp">ER / ${product.code}<br>LIMITED SIGNAL</span></div><div class="detail-copy"><span class="section-kicker"><i></i> ${product.tag}</span><h1>${product.name}</h1><span class="modal-category">${product.category} / E Rynex Studio</span><p>${product.description}</p><div class="detail-price">${money(product.price)} <small>ou 3x sem juros</small></div><div class="option-group"><span>Selecione o tamanho</span><div class="options"><button class="option active">P</button><button class="option">M</button><button class="option">G</button><button class="option">GG</button></div></div><button class="button button-light full" data-add="${product.id}">Adicionar ao carrinho ${icon('arrow', 17)}</button><div class="modal-details"><span>⌁ Envio em até 48h</span><span>↻ Troca fácil em 30 dias</span><span>✦ Drop limitado E Rynex</span></div></div></section><section class="product-info section-shell"><div><span class="eyebrow">01 / Design</span><h2>Construído para<br><em>mover com você.</em></h2></div><p>Textura, volume e função encontram um equilíbrio preciso nesta peça. É um sinal para usar do seu jeito, em qualquer frequência.</p></section><section class="products related section-shell"><div class="section-heading"><div><span class="section-kicker"><i></i> You may also like</span><h2>Mais da <em>frequência.</em></h2></div><a class="arrow-link" href="${route('/shop')}">Ver catálogo ${icon('arrow', 16)}</a></div><div class="products-grid">${related.map(productCard).join('')}</div></section>`;
 }
 const getLastOrder = () => { try { return JSON.parse(localStorage.getItem('rynex-last-order') || 'null'); } catch { return null; } };
+function orderTrackingUrl(orderId) { return new URL(`${route('/')}?order=${encodeURIComponent(orderId)}`, window.location.origin).toString(); }
 function orderChatPanel(order) {
-  let payment = null;
-  try { payment = JSON.parse(localStorage.getItem(`rynex-payment-${order.id}`) || 'null'); } catch {}
+  let payment = order.payment || null;
+  try { payment ||= JSON.parse(localStorage.getItem(`rynex-payment-${order.id}`) || 'null'); } catch {}
   const status = order.status === 'awaiting_delivery' || order.status === 'paid' ? 'Pagamento confirmado / aguardando entrega' : order.status === 'payment_rejected' ? 'Pagamento recusado' : 'Aguardando pagamento';
-  return `<section class="order-chat-section"><div class="order-chat-card" id="order-chat-card" data-order-id="${order.id}"><div class="section-kicker"><i></i> Atendimento do pedido</div><div class="order-chat-head"><div><h2>Pedido ${order.id}</h2><p>Converse por aqui; as mensagens também chegam ao canal privado no Discord.</p></div><span class="order-status" id="order-status">${status}</span></div><div class="order-summary"><span>${(order.items || []).map(item => `${item.quantity}× ${item.name}`).join(' · ')}</span><strong>${money(order.total || 0)}</strong></div>${Number(order.total) > 0 ? `<div class="order-payment"><strong>Pagamento por Pix</strong>${payment?.qrCodeDataUrl ? `<div class="pix-payment-grid"><div class="pix-qr-wrap"><img class="pix-qr-code" src="${escapeHtml(payment.qrCodeDataUrl)}" alt="QR Code Pix do pedido ${escapeHtml(order.id)}" /><span>Escaneie com o app do seu banco</span></div><div class="pix-copy-area"><label for="pix-copy-code">Pix copia e cola</label><textarea id="pix-copy-code" class="pix-copy-code" readonly>${escapeHtml(payment.copyPaste || '')}</textarea><button class="button button-light" type="button" data-copy-pix>Copiar código Pix</button><p class="pix-manual-note">${escapeHtml(payment.instructions || 'Envie o comprovante no atendimento; um administrador confirmará o pagamento manualmente.')}</p></div></div>${payment?.pixKey ? `<p class="pix-key-line">Chave recebedora: <code>${escapeHtml(payment.pixKey)}</code></p>` : ''}` : `<p>${escapeHtml(payment?.instructions || 'A chave Pix ainda não foi configurada pela equipe.')}</p>${payment?.pixKey ? `<p>Chave Pix: <code>${escapeHtml(payment.pixKey)}</code></p>` : ''}`}</div>` : ''}<div class="order-messages" id="order-messages" aria-live="polite"><p class="order-note">Carregando conversa…</p></div><form class="order-message-form" id="order-message-form"><label for="order-message-input">Sua mensagem</label><textarea id="order-message-input" name="content" maxlength="1800" placeholder="Escreva para a equipe…" required></textarea><button class="button button-light" type="submit">Enviar mensagem ${icon('arrow', 16)}</button><p class="order-note" id="order-message-note">A equipe responde pelo Discord; a resposta aparece aqui automaticamente.</p></form></div></section>`;
+  const trackingUrl = orderTrackingUrl(order.id);
+  return `<section class="order-chat-section"><div class="order-chat-card" id="order-chat-card" data-order-id="${escapeHtml(order.id)}"><div class="section-kicker"><i></i> Atendimento do pedido</div><div class="order-chat-head"><div><h2>Pedido ${escapeHtml(order.id)}</h2><p>Converse por aqui; as mensagens também chegam ao canal privado no Discord.</p></div><span class="order-status" id="order-status">${status}</span></div><div class="order-summary"><span>${(order.items || []).map(item => `${item.quantity}× ${escapeHtml(item.name)}`).join(' · ')}</span><strong>${money(order.total || 0)}</strong></div><div class="order-link-actions"><span>Link de acompanhamento</span><button class="button button-outline" type="button" data-copy-order-link="${escapeHtml(trackingUrl)}">Copiar link do pedido</button></div>${Number(order.total) > 0 ? `<div class="order-payment"><strong>Pagamento por Pix</strong>${payment?.qrCodeDataUrl ? `<div class="pix-payment-grid"><div class="pix-qr-wrap"><img class="pix-qr-code" src="${escapeHtml(payment.qrCodeDataUrl)}" alt="QR Code Pix do pedido ${escapeHtml(order.id)}" /><span>Escaneie com o app do seu banco</span></div><div class="pix-copy-area"><label for="pix-copy-code">Pix copia e cola</label><textarea id="pix-copy-code" class="pix-copy-code" readonly>${escapeHtml(payment.copyPaste || '')}</textarea><button class="button button-light" type="button" data-copy-pix>Copiar código Pix</button><p class="pix-manual-note">${escapeHtml(payment.instructions || 'Envie o comprovante no atendimento; um administrador confirmará o pagamento manualmente.')}</p></div></div>${payment?.pixKey ? `<p class="pix-key-line">Chave recebedora: <code>${escapeHtml(payment.pixKey)}</code></p>` : ''}` : `<p>${escapeHtml(payment?.instructions || 'A chave Pix ainda não foi configurada pela equipe.')}</p>${payment?.pixKey ? `<p>Chave Pix: <code>${escapeHtml(payment.pixKey)}</code></p>` : ''}<button class="button button-outline" type="button" data-generate-pix>Gerar QR Pix</button><p class="pix-manual-note" id="pix-generation-note">Se a equipe já configurou a chave Pix, gere o QR aqui.</p>`}</div>` : ''}<div class="order-messages" id="order-messages" aria-live="polite"><p class="order-note">Carregando conversa…</p></div><form class="order-message-form" id="order-message-form"><label for="order-message-input">Sua mensagem</label><textarea id="order-message-input" name="content" maxlength="1800" placeholder="Escreva para a equipe…" required></textarea><button class="button button-light" type="submit">Enviar mensagem ${icon('arrow', 16)}</button><p class="order-note" id="order-message-note">A equipe responde pelo Discord; a resposta aparece aqui automaticamente.</p></form></div></section>`;
 }
 function cartPage() {
   const subtotal = cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
   const session = getSession();
-  const lastOrder = getLastOrder();
-  return `<section class="page-hero cart-page-hero section-shell"><span class="section-kicker"><i></i> Your frequency</span><h1>Seu<br><span>carrinho.</span></h1><p>Revise seus sinais antes de seguir para o checkout.</p></section><section class="cart-page section-shell"><div id="cart-page-items">${cart.length ? cart.map(cartItem).join('') : lastOrder ? '' : `<div class="cart-page-empty"><div class="empty-bag">${icon('bag', 35)}</div><h2>Seu carrinho está vazio.</h2><p>A próxima frequência começa no catálogo.</p><a class="button button-light" href="${route('/shop')}">Explorar drops ${icon('arrow', 16)}</a></div>`}</div>${cart.length ? `<aside class="cart-page-summary"><span class="eyebrow">Order summary</span><h2>Resumo do pedido</h2><div><span>Subtotal</span><strong>${money(subtotal)}</strong></div><div><span>Frete</span><strong class="free">A combinar</strong></div><hr><div><span>Total estimado</span><strong>${money(subtotal)}</strong></div>${session ? `<form id="checkout-form" class="checkout-form"><label>E-mail de contato<input name="email" type="email" value="${session.user?.email || ''}" required /></label><label>ID do Discord <small>opcional, para liberar o canal ao cliente</small><input name="discordUserId" inputmode="numeric" placeholder="Ex.: 123456789012345678" /></label><label>Cupom<input name="coupon" placeholder="RYNEX-TEST" /></label><button class="button button-light full" type="submit">Criar pedido ${icon('arrow', 16)}</button><p id="checkout-note">${escapeHtml(storeSettings.checkoutNote || 'Pagamento manual via Pix; a entrega é feita pela equipe no atendimento.')}</p></form>` : `<a class="button button-light full" href="${route('/login?return=/cart')}">Entrar para finalizar ${icon('arrow', 16)}</a><p>Você precisa criar uma conta para acompanhar o pedido.</p>`}</aside>` : ''}${lastOrder ? orderChatPanel(lastOrder) : ''}</section>`;
+  const linkedOrderId = new URLSearchParams(window.location.search).get('order');
+  const storedOrder = getLastOrder();
+  const lastOrder = linkedOrderId ? (storedOrder?.id === linkedOrderId ? storedOrder : null) : storedOrder;
+  const orderPanel = lastOrder ? orderChatPanel(lastOrder) : linkedOrderId ? `<section class="order-chat-section" id="linked-order-content"><div class="order-chat-card"><p class="order-note">Carregando seu pedido…</p></div></section>` : '';
+  const showCart = !linkedOrderId && cart.length > 0;
+  const emptyCart = `<div class="cart-page-empty"><div class="empty-bag">${icon('bag', 35)}</div><h2>Seu carrinho está vazio.</h2><p>A próxima frequência começa no catálogo.</p><a class="button button-light" href="${route('/shop')}">Explorar drops ${icon('arrow', 16)}</a></div>`;
+  const summary = showCart ? `<aside class="cart-page-summary"><span class="eyebrow">Order summary</span><h2>Resumo do pedido</h2><div><span>Subtotal</span><strong>${money(subtotal)}</strong></div><div><span>Frete</span><strong class="free">A combinar</strong></div><hr><div><span>Total estimado</span><strong>${money(subtotal)}</strong></div>${session ? `<form id="checkout-form" class="checkout-form"><label>E-mail de contato<input name="email" type="email" value="${escapeHtml(session.user?.email || '')}" required /></label><label>ID do Discord <small>opcional, para liberar o canal ao cliente</small><input name="discordUserId" inputmode="numeric" placeholder="Ex.: 123456789012345678" /></label><label>Cupom<input name="coupon" placeholder="RYNEX-TEST" /></label><button class="button button-light full" type="submit">Criar pedido e gerar Pix ${icon('arrow', 16)}</button><p id="checkout-note">${escapeHtml(storeSettings.checkoutNote || 'O pedido gera QR Pix e código copia-e-cola automaticamente. A equipe confirma o pagamento manualmente.')}</p></form>` : `<a class="button button-light full" href="${route('/login?return=/cart')}">Entrar para finalizar ${icon('arrow', 16)}</a><p>Você precisa criar uma conta para acompanhar o pedido.</p>`}</aside>` : '';
+  return `<section class="page-hero cart-page-hero section-shell"><span class="section-kicker"><i></i> Your frequency</span><h1>Seu<br><span>${linkedOrderId ? 'pedido.' : 'carrinho.'}</span></h1><p>${linkedOrderId ? 'Acompanhe seu pedido, o Pix e a conversa com a equipe.' : 'Revise seus sinais antes de seguir para o checkout.'}</p></section><section class="cart-page section-shell"><div id="cart-page-items">${showCart ? cart.map(item => cartItem(item)).join('') : orderPanel ? '' : emptyCart}</div>${summary}${orderPanel}</section>`;
 }
 const cartItem = item => `<div class="cart-page-item"><div class="cart-thumb">${productVisual(item.product)}</div><div><span class="eyebrow">${item.product.category}</span><h3>${item.product.name}</h3><strong>${money(item.product.price)}</strong><div class="quantity"><button data-quantity="${item.product.id}" data-change="-1">${icon('minus', 13)}</button><span>${item.quantity}</span><button data-quantity="${item.product.id}" data-change="1">${icon('plus', 13)}</button></div></div><button class="remove-item" data-remove="${item.product.id}">${icon('close', 16)}</button></div>`;
 
-let content = currentPath === '/' ? homePage() : currentPath === '/shop' ? shopPage() : currentPath === '/about' ? aboutPage() : currentPath === '/cart' ? cartPage() : currentPath === '/login' ? loginPage() : currentPath === '/contact' ? `<section class="page-hero section-shell"><span class="section-kicker"><i></i> Open channel</span><h1>Fale com<br><span>a gente.</span></h1><p>Para colaborações, dúvidas ou só para mandar um sinal, escreva para nós.</p></section><section class="contact-section section-shell"><form id="contact-form"><label>Seu nome<input required placeholder="Como podemos chamar você?" /></label><label>Seu e-mail<input required type="email" placeholder="seu@email.com" /></label><label>Mensagem<textarea required placeholder="Escreva seu sinal..."></textarea></label><button class="button button-light">Enviar mensagem ${icon('arrow', 16)}</button><p id="contact-note">Respondemos em até 48 horas.</p></form><div class="contact-aside"><span class="section-kicker"><i></i> E Rynex studio</span><h2>Sem ruído.<br><em>Direto ao ponto.</em></h2><p>São Paulo / Brasil<br>${escapeHtml(storeSettings.supportEmail || 'hello@erynex.com')}<br>@erynex.studio</p></div></section>` : currentPath.startsWith('/product/') ? productPage(currentProduct) : shopPage();
-const active = currentPath === '/' ? 'home' : currentPath === '/about' ? 'about' : currentPath === '/login' ? '' : 'shop';
+const linkedOrderId = new URLSearchParams(window.location.search).get('order');
+let content = linkedOrderId ? cartPage() : currentPath === '/' ? homePage() : currentPath === '/shop' ? shopPage() : currentPath === '/about' ? aboutPage() : currentPath === '/cart' ? cartPage() : currentPath === '/login' ? loginPage() : currentPath === '/contact' ? `<section class="page-hero section-shell"><span class="section-kicker"><i></i> Open channel</span><h1>Fale com<br><span>a gente.</span></h1><p>Para colaborações, dúvidas ou só para mandar um sinal, escreva para nós.</p></section><section class="contact-section section-shell"><form id="contact-form"><label>Seu nome<input required placeholder="Como podemos chamar você?" /></label><label>Seu e-mail<input required type="email" placeholder="seu@email.com" /></label><label>Mensagem<textarea required placeholder="Escreva seu sinal..."></textarea></label><button class="button button-light">Enviar mensagem ${icon('arrow', 16)}</button><p id="contact-note">Respondemos em até 48 horas.</p></form><div class="contact-aside"><span class="section-kicker"><i></i> E Rynex studio</span><h2>Sem ruído.<br><em>Direto ao ponto.</em></h2><p>São Paulo / Brasil<br>${escapeHtml(storeSettings.supportEmail || 'hello@erynex.com')}<br>@erynex.studio</p></div></section>` : currentPath.startsWith('/product/') ? productPage(currentProduct) : shopPage();
+const active = linkedOrderId || currentPath === '/login' ? '' : currentPath === '/' ? 'home' : currentPath === '/about' ? 'about' : 'shop';
 document.querySelector('#app').innerHTML = pageShell(content, active);
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -132,7 +146,29 @@ $$('[data-hero-prev]').forEach(button => button.addEventListener('click', () => 
 $$('[data-hero-next]').forEach(button => button.addEventListener('click', () => setHeroSlide(heroIndex + 1)));
 heroDots.forEach(dot => dot.addEventListener('click', () => setHeroSlide(Number(dot.dataset.heroDot))));
 if (heroSlides.length) window.setInterval(() => setHeroSlide(heroIndex + 1), 6500);
-document.addEventListener('click', event => {
+document.addEventListener('click', async event => {
+  const generatePix = event.target.closest('[data-generate-pix]');
+  if (generatePix) {
+    const card = $('#order-chat-card');
+    const note = $('#pix-generation-note');
+    generatePix.disabled = true;
+    if (note) note.textContent = 'Gerando a cobrança Pix…';
+    try {
+      const result = await apiRequest(`/api/store/orders/${encodeURIComponent(card.dataset.orderId)}/payment`, { method: 'POST', body: '{}' });
+      localStorage.setItem('rynex-last-order', JSON.stringify(result.order));
+      localStorage.setItem(`rynex-payment-${result.order.id}`, JSON.stringify(result.payment));
+      window.location.reload();
+    } catch (error) { if (note) note.textContent = error.message; generatePix.disabled = false; }
+    return;
+  }
+  const copyOrderLink = event.target.closest('[data-copy-order-link]');
+  if (copyOrderLink) {
+    const text = copyOrderLink.dataset.copyOrderLink;
+    try { await navigator.clipboard.writeText(text); copyOrderLink.textContent = 'Link copiado'; }
+    catch (_) { const area = document.createElement('textarea'); area.value = text; document.body.append(area); area.select(); document.execCommand('copy'); area.remove(); copyOrderLink.textContent = 'Link copiado'; }
+    setTimeout(() => { copyOrderLink.textContent = 'Copiar link do pedido'; }, 1800);
+    return;
+  }
   const copyPix = event.target.closest('[data-copy-pix]');
   if (copyPix) {
     const code = $('#pix-copy-code');
@@ -164,6 +200,44 @@ const apiRequest = async (path, options = {}) => {
   if (!response.ok) throw new Error(payload.message || 'Não foi possível concluir a operação.');
   return payload;
 };
+const compressProfileImage = async file => {
+  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) throw new Error('Escolha uma imagem PNG, JPG ou WEBP.');
+  if (file.size > 10 * 1024 * 1024) throw new Error('A imagem original precisa ter até 10 MB.');
+  const image = await createImageBitmap(file);
+  try {
+    for (const maxSide of [320, 256, 192]) {
+      const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(image.width * scale));
+      canvas.height = Math.max(1, Math.round(image.height * scale));
+      canvas.getContext('2d', { alpha: false }).drawImage(image, 0, 0, canvas.width, canvas.height);
+      for (const quality of [0.82, 0.7, 0.58, 0.48]) {
+        let dataUrl = canvas.toDataURL('image/webp', quality);
+        if (!dataUrl.startsWith('data:image/webp;base64,')) dataUrl = canvas.toDataURL('image/jpeg', quality);
+        const encoded = dataUrl.slice(dataUrl.indexOf(',') + 1);
+        if (Math.ceil(encoded.length * 3 / 4) <= 180 * 1024) return dataUrl;
+      }
+    }
+  } finally { image.close?.(); }
+  throw new Error('Não foi possível comprimir a foto para menos de 180 KB. Escolha outra imagem.');
+};
+const linkedOrderToLoad = new URLSearchParams(window.location.search).get('order');
+if (linkedOrderToLoad && getLastOrder()?.id !== linkedOrderToLoad) {
+  apiRequest(`/api/store/orders/${encodeURIComponent(linkedOrderToLoad)}`).then(({ order }) => {
+    if (!order) throw new Error('Pedido não encontrado.');
+    localStorage.setItem('rynex-last-order', JSON.stringify(order));
+    if (order.payment) localStorage.setItem(`rynex-payment-${order.id}`, JSON.stringify(order.payment));
+    const container = $('#linked-order-content');
+    if (container) container.outerHTML = orderChatPanel(order);
+    refreshOrderChat();
+  }).catch(error => {
+    const container = $('#linked-order-content');
+    if (!container) return;
+    const returnPath = `/?order=${encodeURIComponent(linkedOrderToLoad)}`;
+    const loginUrl = `${route('/login')}?return=${encodeURIComponent(returnPath)}`;
+    container.innerHTML = `<div class="order-chat-card"><p class="order-note">${escapeHtml(error.message)} Entre na conta usada para fazer este pedido para ver os detalhes.</p><a class="button button-light" href="${escapeHtml(loginUrl)}">Entrar e abrir pedido ${icon('arrow', 16)}</a></div>`;
+  });
+}
 const showAuthNote = (id, message, success = false) => { const node = document.querySelector(id); if (node) { node.textContent = message; node.classList.toggle('success', success); } };
 $('#login-form')?.addEventListener('submit', async event => {
   event.preventDefault();
@@ -179,6 +253,27 @@ $('#register-form')?.addEventListener('submit', async event => {
   try { const result = await apiRequest('/api/auth/register', { method: 'POST', body: JSON.stringify({ name: form.get('name'), username: form.get('username'), email: form.get('email'), password: form.get('password') }) }); localStorage.setItem(SESSION_KEY, JSON.stringify(result)); window.location.href = route('/cart'); }
   catch (error) { showAuthNote('#register-note', error.message); }
 });
+$('#avatar-file')?.addEventListener('change', async event => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  showAuthNote('#avatar-note', 'Preparando sua foto…');
+  try {
+    profileAvatarDraft = await compressProfileImage(file);
+    const user = getSession()?.user || {};
+    $('#avatar-preview').innerHTML = avatarMarkup({ ...user, avatar: profileAvatarDraft }, 'profile-avatar-image');
+    showAuthNote('#avatar-note', 'Foto pronta. Salve as alterações para aplicá-la à conta.', true);
+  } catch (error) {
+    showAuthNote('#avatar-note', error.message);
+    event.target.value = '';
+  }
+});
+$('#remove-avatar')?.addEventListener('click', () => {
+  profileAvatarDraft = null;
+  $('#avatar-file').value = '';
+  const user = getSession()?.user || {};
+  $('#avatar-preview').innerHTML = avatarMarkup({ ...user, avatar: null }, 'profile-avatar-image');
+  showAuthNote('#avatar-note', 'A foto será removida quando você salvar as alterações.', true);
+});
 $('#profile-form')?.addEventListener('submit', async event => {
   event.preventDefault();
   const form = new FormData(event.target);
@@ -187,8 +282,13 @@ $('#profile-form')?.addEventListener('submit', async event => {
   if (button) button.disabled = true;
   showAuthNote('#profile-note', 'Salvando seus dados...');
   try {
-    const result = await apiRequest('/api/auth/profile', { method: 'PUT', body: JSON.stringify({ name: form.get('name'), username: form.get('username'), email: form.get('email'), currentPassword: form.get('currentPassword'), newPassword: form.get('newPassword') }) });
+    const result = await apiRequest('/api/auth/profile', { method: 'PUT', body: JSON.stringify({ name: form.get('name'), username: form.get('username'), email: form.get('email'), currentPassword: form.get('currentPassword'), newPassword: form.get('newPassword'), avatar: profileAvatarDraft }) });
     localStorage.setItem(SESSION_KEY, JSON.stringify({ ...getSession(), user: result.user }));
+    profileAvatarDraft = result.user.avatar || null;
+    const avatarPreview = $('#avatar-preview');
+    if (avatarPreview) avatarPreview.innerHTML = avatarMarkup(result.user, 'profile-avatar-image');
+    const loginLink = $('.login-button');
+    if (loginLink) loginLink.innerHTML = `${avatarMarkup(result.user, 'header-avatar')}<span>Minha conta</span>`;
     event.target.elements.currentPassword.value = '';
     event.target.elements.newPassword.value = '';
     showAuthNote('#profile-note', 'Conta atualizada com sucesso.', true);
@@ -213,7 +313,7 @@ $('#checkout-form')?.addEventListener('submit', async event => {
     localStorage.setItem('rynex-last-order', JSON.stringify(result.order));
     if (result.payment) localStorage.setItem(`rynex-payment-${result.order.id}`, JSON.stringify(result.payment));
     cart = []; saveCart();
-    window.location.reload();
+    window.location.href = orderTrackingUrl(result.order.id);
   } catch (error) { if (note) note.textContent = error.message; }
 });
 const refreshOrderChat = async () => {
@@ -255,7 +355,8 @@ const refreshOrderChat = async () => {
     if (note) note.textContent = error.message;
   }
 };
-$('#order-message-form')?.addEventListener('submit', async event => {
+document.addEventListener('submit', async event => {
+  if (event.target.id !== 'order-message-form') return;
   event.preventDefault();
   const form = new FormData(event.target);
   const card = $('#order-chat-card');
@@ -271,10 +372,8 @@ $('#order-message-form')?.addEventListener('submit', async event => {
   } catch (error) { if (note) note.textContent = error.message; }
   finally { if (button) button.disabled = false; }
 });
-if ($('#order-chat-card')) {
-  refreshOrderChat();
-  window.setInterval(refreshOrderChat, 4000);
-}
+refreshOrderChat();
+window.setInterval(refreshOrderChat, 4000);
 $('[data-focus-search]')?.addEventListener('click', () => { if (currentPath !== '/shop') window.location.href = route('/shop'); else $('#search')?.focus(); });
 $('#newsletter')?.addEventListener('submit', event => { event.preventDefault(); $('#newsletter-note').textContent = 'Sinal captado. Você será o primeiro a saber do próximo drop.'; $('#newsletter-note').classList.add('success'); event.target.reset(); });
 $('#contact-form')?.addEventListener('submit', event => { event.preventDefault(); $('#contact-note').textContent = 'Mensagem recebida. Voltamos em breve.'; $('#contact-note').classList.add('success'); event.target.reset(); });

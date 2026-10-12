@@ -24,6 +24,9 @@
 - Refinar a camada visual em `src/styles.css` com tokens, estados de foco, responsividade e profundidade.
 - Manter assets oficiais existentes e o manifesto de rotas.
 - Validar com build de produção e smoke test HTTP do Vite.
+- Em Minha conta, permitir escolher, pré-visualizar, substituir e remover uma foto; o navegador reduz a imagem e a API valida formato e tamanho antes de persistir no perfil.
+- No checkout, criar o pedido e gerar automaticamente QR Pix estático e código copia-e-cola pelo mesmo gerador usado em `/gerarpix`; persistir a cobrança no pedido e permitir regenerá-la após a configuração da chave.
+- Fornecer link de acompanhamento do pedido com autorização da conta. Pix estático não produz URL universal de pagamento nem confirma o crédito automaticamente; a confirmação continua manual no bot.
 
 ## Estrutura
 

@@ -1,1 +1,4 @@
 - [x] Corrigir o GitHub Pages para suportar links internos como /Rynex/cart, /Rynex/shop e /Rynex/product/:id usando base de assets e fallback 404.html.
+- [x] Em Minha conta, escolher, pré-visualizar, substituir ou remover uma foto de perfil; comprimir a imagem no navegador, validar o tipo e o tamanho no servidor, salvar junto à conta e exibi-la no cabeçalho e na conta após recarregar.
+- [x] Ao criar um pedido pago, gerar automaticamente o QR Pix estático e o código copia-e-cola com o mesmo gerador de /gerarpix; salvar a cobrança no pedido, permitir gerar novamente após configurar Pix, exibir QR/código no acompanhamento e oferecer link seguro do pedido.
+- [x] Manter a confirmação do pagamento manual: Pix estático não confirma recebimento nem cria um link de pagamento universal; o canal de entrega só é aberto depois da confirmação administrativa no Discord.
