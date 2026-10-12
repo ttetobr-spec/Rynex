@@ -329,7 +329,12 @@ $('#register-form')?.addEventListener('submit', async event => {
   const form = new FormData(event.target);
   showAuthNote('#register-note', 'Criando sua conta...');
   try { const result = await apiRequest('/api/auth/register', { method: 'POST', body: JSON.stringify({ name: form.get('name'), username: form.get('username'), email: form.get('email'), password: form.get('password') }) }); localStorage.setItem(SESSION_KEY, JSON.stringify(result)); adoptGuestCart(); const next = new URLSearchParams(window.location.search).get('return') || '/cart'; window.location.href = route(next); }
-  catch (error) { showAuthNote('#register-note', error.message); }
+  catch (error) {
+    const message = error instanceof TypeError && /fetch/i.test(error.message)
+      ? 'A conexão caiu antes da confirmação. Sua conta pode já ter sido criada; tente entrar antes de cadastrar novamente.'
+      : error.message;
+    showAuthNote('#register-note', message);
+  }
 });
 $('#avatar-file')?.addEventListener('change', async event => {
   const file = event.target.files?.[0];
