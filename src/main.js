@@ -48,9 +48,32 @@ const icon = (name, size = 20) => {
   const paths = { search: '<circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path>', bag: '<path d="M6 8h12l1 12H5L6 8Z"></path><path d="M9 8a3 3 0 0 1 6 0"></path>', arrow: '<path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path>', close: '<path d="m6 6 12 12M18 6 6 18"></path>', plus: '<path d="M12 5v14M5 12h14"></path>', minus: '<path d="M5 12h14"></path>', chevron: '<path d="m6 9 6 6 6-6"></path>', spark: '<path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z"></path>', headphones: '<path d="M4 14v-2a8 8 0 0 1 16 0v2"></path><path d="M4 14h3v5H5a1 1 0 0 1-1-1v-4Zm16 0h-3v5h2a1 1 0 0 0 1-1v-4Z"></path>', user: '<circle cx="12" cy="8" r="3"></circle><path d="M5 20a7 7 0 0 1 14 0"></path>' };
   return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${paths[name] || paths.spark}</svg>`;
 };
-const getCart = () => JSON.parse(localStorage.getItem('erynex-cart') || '[]').map(item => ({ product: products.find(p => String(p.id) === String(item.id)), quantity: item.quantity })).filter(item => item.product);
+const LEGACY_CART_KEY = 'erynex-cart';
+const GUEST_CART_KEY = 'erynex-cart:guest';
+const cartStorageKey = (session = getSession()) => session?.user?.id ? `erynex-cart:user:${String(session.user.id)}` : GUEST_CART_KEY;
+try { localStorage.removeItem(LEGACY_CART_KEY); } catch {}
+const readCartData = key => { try { const data = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(data) ? data : []; } catch { return []; } };
+const getCart = () => readCartData(cartStorageKey()).map(item => ({ product: products.find(p => String(p.id) === String(item.id)), quantity: Math.min(20, Math.max(1, Math.floor(Number(item.quantity) || 1))) })).filter(item => item.product);
 let cart = getCart();
-const saveCart = () => localStorage.setItem('erynex-cart', JSON.stringify(cart.map(item => ({ id: item.product.id, quantity: item.quantity }))));
+const saveCart = () => localStorage.setItem(cartStorageKey(), JSON.stringify(cart.map(item => ({ id: item.product.id, quantity: item.quantity }))));
+const adoptGuestCart = () => {
+  const session = getSession();
+  if (!session?.user?.id) return;
+  const guestItems = readCartData(GUEST_CART_KEY);
+  const accountKey = cartStorageKey(session);
+  if (guestItems.length) {
+    const merged = new Map();
+    for (const item of [...readCartData(accountKey), ...guestItems]) {
+      const id = String(item?.id ?? '');
+      if (!id) continue;
+      const quantity = Math.max(1, Math.floor(Number(item.quantity) || 1));
+      merged.set(id, Math.min(20, (merged.get(id) || 0) + quantity));
+    }
+    localStorage.setItem(accountKey, JSON.stringify([...merged].map(([id, quantity]) => ({ id, quantity }))));
+    localStorage.removeItem(GUEST_CART_KEY);
+  }
+  cart = getCart();
+};
 const cartCount = () => cart.reduce((total, item) => total + item.quantity, 0);
 const rawPath = window.location.pathname;
 const currentPath = (siteBase && rawPath.startsWith(siteBase) ? rawPath.slice(siteBase.length) : rawPath).replace(/\/$/, '') || '/';
@@ -137,10 +160,10 @@ function cartPage() {
   const session = getSession();
   const linkedOrderId = new URLSearchParams(window.location.search).get('order');
   const storedOrder = getLastOrder();
-  const lastOrder = linkedOrderId ? (storedOrder?.id === linkedOrderId ? storedOrder : null) : storedOrder;
-  const orderPanel = lastOrder ? orderChatPanel(lastOrder) : linkedOrderId ? `<section class="order-chat-section" id="linked-order-content"><div class="order-chat-card"><p class="order-note">Carregando seu pedido…</p></div></section>` : '';
+  const linkedOrder = linkedOrderId && storedOrder?.id === linkedOrderId ? storedOrder : null;
+  const orderPanel = linkedOrderId ? (linkedOrder ? orderChatPanel(linkedOrder) : `<section class="order-chat-section" id="linked-order-content"><div class="order-chat-card"><p class="order-note">Carregando seu pedido…</p></div></section>`) : '';
   const showCart = !linkedOrderId && cart.length > 0;
-  const emptyCart = `<div class="cart-page-empty"><div class="empty-bag">${icon('bag', 35)}</div><h2>Seu carrinho está vazio.</h2><p>A próxima frequência começa no catálogo.</p><a class="button button-light" href="${route('/shop')}">Explorar drops ${icon('arrow', 16)}</a></div>`;
+  const emptyCart = `<div class="cart-page-empty"><div class="empty-bag">${icon('bag', 35)}</div><h2>Seu carrinho está vazio.</h2><p>Pedidos em aberto ficam em <a href="${route('/orders')}">Meus pedidos</a> e não bloqueiam novas compras.</p><a class="button button-light" href="${route('/shop')}">Explorar drops ${icon('arrow', 16)}</a></div>`;
   const summary = showCart ? `<aside class="cart-page-summary"><span class="eyebrow">Order summary</span><h2>Resumo do pedido</h2><div><span>Subtotal</span><strong>${money(subtotal)}</strong></div><div><span>Frete</span><strong class="free">A combinar</strong></div><hr><div><span>Total estimado</span><strong>${money(subtotal)}</strong></div>${session ? `<form id="checkout-form" class="checkout-form"><label>E-mail de contato<input name="email" type="email" value="${escapeHtml(session.user?.email || '')}" required /></label><label>ID do Discord <small>opcional, para liberar o canal ao cliente</small><input name="discordUserId" inputmode="numeric" placeholder="Ex.: 123456789012345678" /></label><label>Cupom<input name="coupon" placeholder="RYNEX-TEST" /></label><button class="button button-light full" type="submit">Criar pedido e gerar Pix ${icon('arrow', 16)}</button><p id="checkout-note">${escapeHtml(storeSettings.checkoutNote || 'O pedido gera QR Pix e código copia-e-cola automaticamente. A equipe confirma o pagamento manualmente.')}</p></form>` : `<a class="button button-light full" href="${route('/login?return=/cart')}">Entrar para finalizar ${icon('arrow', 16)}</a><p>Você precisa criar uma conta para acompanhar o pedido.</p>`}</aside>` : '';
   return `<section class="page-hero cart-page-hero section-shell"><span class="section-kicker"><i></i> Your frequency</span><h1>Seu<br><span>${linkedOrderId ? 'pedido.' : 'carrinho.'}</span></h1><p>${linkedOrderId ? 'Acompanhe seu pedido, o Pix e a conversa com a equipe.' : 'Revise seus sinais antes de seguir para o checkout.'}</p></section><section class="cart-page section-shell"><div id="cart-page-items">${showCart ? cart.map(item => cartItem(item)).join('') : orderPanel ? '' : emptyCart}</div>${summary}${orderPanel}</section>`;
 }
@@ -222,7 +245,7 @@ document.addEventListener('click', async event => {
   if (event.target.closest('[data-menu]')) $('.main-nav').classList.toggle('menu-open');
   const filter = event.target.closest('[data-filter]'); if (filter) { filterCatalog(filter.dataset.filter); }
   if (event.target.closest('[data-clear-search]')) { if ($('#search')) $('#search').value = ''; filterCatalog('All'); }
-  if (event.target.closest('[data-checkout]')) { const toast = $('#toast'); toast.querySelector('p').textContent = 'Checkout demonstrativo em breve'; toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); toast.querySelector('p').textContent = 'Adicionado ao carrinho'; }, 2300); }
+  if (event.target.closest('[data-checkout]')) { window.location.href = route('/cart'); return; }
   const option = event.target.closest('.option'); if (option) { $$('.option').forEach(item => item.classList.remove('active')); option.classList.add('active'); }
 });
 $('#search')?.addEventListener('input', () => filterCatalog($('.filter.active')?.dataset.filter || 'All'));
@@ -298,14 +321,14 @@ $('#login-form')?.addEventListener('submit', async event => {
   event.preventDefault();
   const form = new FormData(event.target);
   showAuthNote('#login-note', 'Conectando...');
-  try { const result = await apiRequest('/api/auth/login', { method: 'POST', body: JSON.stringify({ email: form.get('email'), password: form.get('password') }) }); localStorage.setItem(SESSION_KEY, JSON.stringify(result)); const next = new URLSearchParams(window.location.search).get('return') || '/cart'; window.location.href = route(next); }
+  try { const result = await apiRequest('/api/auth/login', { method: 'POST', body: JSON.stringify({ email: form.get('email'), password: form.get('password') }) }); localStorage.setItem(SESSION_KEY, JSON.stringify(result)); adoptGuestCart(); const next = new URLSearchParams(window.location.search).get('return') || '/cart'; window.location.href = route(next); }
   catch (error) { showAuthNote('#login-note', error.message); }
 });
 $('#register-form')?.addEventListener('submit', async event => {
   event.preventDefault();
   const form = new FormData(event.target);
   showAuthNote('#register-note', 'Criando sua conta...');
-  try { const result = await apiRequest('/api/auth/register', { method: 'POST', body: JSON.stringify({ name: form.get('name'), username: form.get('username'), email: form.get('email'), password: form.get('password') }) }); localStorage.setItem(SESSION_KEY, JSON.stringify(result)); const next = new URLSearchParams(window.location.search).get('return') || '/cart'; window.location.href = route(next); }
+  try { const result = await apiRequest('/api/auth/register', { method: 'POST', body: JSON.stringify({ name: form.get('name'), username: form.get('username'), email: form.get('email'), password: form.get('password') }) }); localStorage.setItem(SESSION_KEY, JSON.stringify(result)); adoptGuestCart(); const next = new URLSearchParams(window.location.search).get('return') || '/cart'; window.location.href = route(next); }
   catch (error) { showAuthNote('#register-note', error.message); }
 });
 $('#avatar-file')?.addEventListener('change', async event => {
@@ -344,8 +367,6 @@ $('#profile-form')?.addEventListener('submit', async event => {
     if (avatarPreview) avatarPreview.innerHTML = avatarMarkup(result.user, 'profile-avatar-image');
     const loginLink = $('.login-button');
     if (loginLink) loginLink.innerHTML = `${avatarMarkup(result.user, 'header-avatar')}<span>Minha conta</span>`;
-    event.target.elements.currentPassword.value = '';
-    event.target.elements.newPassword.value = '';
     showAuthNote('#profile-note', 'Conta atualizada com sucesso.', true);
     const heading = document.querySelector('.auth-card h2');
     if (heading) heading.textContent = `Olá, ${result.user.name}.`;
@@ -374,8 +395,14 @@ $('#change-password-form')?.addEventListener('submit', async event => {
 $('#logout-button')?.addEventListener('click', async () => {
   try { await apiRequest('/api/auth/logout', { method: 'POST', body: '{}' }); }
   catch (_) {}
+  localStorage.removeItem(cartStorageKey());
+  localStorage.removeItem(GUEST_CART_KEY);
+  localStorage.removeItem(LEGACY_CART_KEY);
+  localStorage.removeItem('rynex-last-order');
+  for (const key of Object.keys(localStorage)) if (key.startsWith('rynex-payment-')) localStorage.removeItem(key);
   localStorage.removeItem(SESSION_KEY);
-  window.location.reload();
+  cart = [];
+  window.location.href = route('/');
 });
 $('#checkout-form')?.addEventListener('submit', async event => {
   event.preventDefault();

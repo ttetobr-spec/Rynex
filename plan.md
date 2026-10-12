@@ -20,7 +20,7 @@
 
 ## Implementação
 
-- Preservar as rotas, o catálogo, filtros, busca, carrinho persistido e checkout demonstrativo.
+- Preservar as rotas, catálogo, filtros e busca; separar carrinho de convidado e carrinho autenticado, transferir o carrinho de convidado após login, limpar o carrinho ativo ao sair e não misturar contas.
 - Refinar a camada visual em `src/styles.css` com tokens, estados de foco, responsividade e profundidade.
 - Manter assets oficiais existentes e o manifesto de rotas.
 - Validar com build de produção e smoke test HTTP do Vite.
@@ -30,6 +30,7 @@
 - Separar a autenticação e a conta em rotas próprias: `/login`, `/register`, `/account` e `/settings`, preservando o cabeçalho e a direção visual da loja.
 - Manter perfil e foto na página Minha conta; concentrar alteração de senha, navegação da conta e logout em Configurações. A troca de senha exige a senha atual; recuperação por e-mail exige um serviço de envio que ainda não está configurado.
 - Separar `/orders` de `/cart`: a página de pedidos recebe apenas o histórico do usuário autenticado, sem expor cobrança ou conversas de outras contas.
+- Manter `/cart` dedicado à compra atual: pedido anterior não substitui o carrinho nem bloqueia outro pedido; acompanhar pedidos existentes em `/orders` ou pelo link individual.
 
 ## Estrutura
 
@@ -37,3 +38,4 @@
 - `src/styles.css`: sistema visual, layout, responsividade e animações.
 - `public/`: logos e manifesto de rotas.
 - `index.html` / `app.config.ts`: entrada, SEO básico e branding do projeto.
+- Manter `/cart` sempre dedicado à compra atual: pedido anterior não substitui o carrinho nem bloqueia a criação de outro pedido; acompanhar pedidos existentes em `/orders` ou pelo link individual.
