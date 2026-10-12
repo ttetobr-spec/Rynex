@@ -550,3 +550,16 @@ body:after{display:none}
   .reference-hero.fullscreen-banner .hero-product-banner-image { max-height: 27svh; border-radius: 9px; }
   .reference-hero.fullscreen-banner .slide-art-label { font-size: 9px; }
 }
+
+
+/* Two Blox Fruits drops share the full-screen carousel and the featured storefront row. */
+.reference-home .reference-product-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
+.reference-home .reference-product-grid .product-card { min-width: 0; }
+.product-stock-count { display: block; margin-top: 7px; color: rgba(255,255,255,.72); font-size: 14px; font-weight: 500; letter-spacing: .01em; }
+.product-stock-inline { color: #a9edca; font-size: 14px; font-weight: 600; }
+.reference-hero.fullscreen-banner .hero-backdrop-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .7s ease; }
+.reference-hero.fullscreen-banner .hero-backdrop-slide.is-active { opacity: 1; }
+.reference-hero.fullscreen-banner .hero-backdrop-slide .product-visual { width: 100%; height: 100%; }
+@media (max-width: 620px) {
+  .reference-home .reference-product-grid { grid-template-columns: minmax(0, 1fr); }
+}

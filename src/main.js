@@ -36,6 +36,21 @@ let products = [
     digital: true,
     active: true,
   },
+  {
+    id: 'random-mitica-1-3-miticas',
+    name: 'RANDOM MÍTICA 1-3 MÍTICAS',
+    category: 'Blox Fruits',
+    price: 2.50,
+    imageUrl: 'https://ttetobr-spec.github.io/Rynex/products/random-mythic.webp',
+    description: 'Random de Blox Fruits com 1 a 3 frutas míticas.',
+    tag: 'RANDOM MÍTICA',
+    tone: 'orange',
+    code: 'BF02',
+    visual: 'account',
+    stock: 12,
+    digital: true,
+    active: true,
+  },
   { id: 1, name: 'Void Runner', category: 'Techwear', price: 289.9, tag: 'NEW DROP', tone: 'violet', code: '01', visual: 'jacket', description: 'Uma camada utilitária para atravessar o ruído. Corte arquitetônico, presença silenciosa e detalhes que respondem ao seu movimento.' },
   { id: 2, name: 'Neon Core', category: 'Essentials', price: 149.9, tag: 'BEST SELLER', tone: 'cyan', code: '02', visual: 'hoodie', description: 'O essencial, mas nunca óbvio. Uma base confortável com a energia visual da próxima frequência.' },
   { id: 3, name: 'Rift 01', category: 'Footwear', price: 399.9, tag: 'LIMITED', tone: 'orange', code: '03', visual: 'shoe', description: 'Um tênis projetado para mudar de direção. Volume expressivo, sola responsiva e acabamento de edição limitada.' },
@@ -50,7 +65,7 @@ let categories = [
   { name: 'Essentials', count: '28 items', tone: 'cyan', glyph: '◒' },
   { name: 'Footwear', count: '09 items', tone: 'orange', glyph: '↗' },
   { name: 'Accessories', count: '16 items', tone: 'pink', glyph: '⌁' },
-  { name: 'Blox Fruits', count: '01 item', tone: 'violet', glyph: '✦' },
+  { name: 'Blox Fruits', count: '02 itens', tone: 'violet', glyph: '✦' },
 ];
 if (remoteCatalog?.products?.length) products = remoteCatalog.products.map(normaliseProduct);
 if (remoteCatalog?.categories?.length) categories = remoteCatalog.categories.map((name, index) => ({ name, count: `${products.filter(product => product.category === name).length} items`, tone: ['violet', 'cyan', 'orange', 'pink'][index % 4], glyph: ['✦', '◒', '↗', '⌁'][index % 4] }));
@@ -103,7 +118,7 @@ const productCard = (product, index = 0) => {
   const addButton = inStock
     ? `<button class="quick-add" type="button" data-add="${product.id}">${icon('plus', 15)}<span>Adicionar</span></button>`
     : '<button class="quick-add is-disabled" type="button" disabled aria-label="Produto esgotado"><span>Esgotado</span></button>';
-  return `<article class="product-card reveal ${inStock ? '' : 'out-of-stock'}" data-category="${product.category}" data-id="${product.id}" style="--delay:${index * 60}ms"><a href="${href}" class="card-image-wrap"><button class="wishlist" type="button" aria-label="Favoritar">♡</button>${productVisual(product)}<span class="product-tag ${inStock ? '' : 'is-out-of-stock'}">${inStock ? product.tag : 'ESGOTADO'}</span>${addButton}</a><div class="product-meta"><div><span class="eyebrow">${product.category}</span><h3><a href="${href}">${product.name}</a></h3></div><strong>${money(product.price)}</strong></div></article>`;
+  return `<article class="product-card reveal ${inStock ? '' : 'out-of-stock'}" data-category="${product.category}" data-id="${product.id}" style="--delay:${index * 60}ms"><a href="${href}" class="card-image-wrap"><button class="wishlist" type="button" aria-label="Favoritar">♡</button>${productVisual(product)}<span class="product-tag ${inStock ? '' : 'is-out-of-stock'}">${inStock ? product.tag : 'ESGOTADO'}</span>${addButton}</a><div class="product-meta"><div><span class="eyebrow">${product.category}</span><h3><a href="${href}">${product.name}</a></h3>${product.stock > 0 ? `<span class="product-stock-count">${product.stock} unidades disponíveis</span>` : ''}</div><strong>${money(product.price)}</strong></div></article>`;
 };
 const logo = `<img class="brand-logo" src="${asset('/erynex-logo.png')}" alt="E Rynex logo" />`;
 const avatarMarkup = (user, className = 'account-avatar') => user?.avatar
@@ -157,32 +172,29 @@ function ordersPage() {
 }
 
 function homePage() {
-  const heroProduct = products.find(product => String(product.id) === 'blox-god-human-max') || products[0];
-  const productUrl = route(`/product/${heroProduct.id}`);
-  const inStock = isProductInStock(heroProduct);
-  const stockLabel = inStock ? 'DISPONÍVEL' : 'ESGOTADO';
-  const slides = [
-    {
-      kicker: 'BLOX FRUITS / CONTA DIGITAL',
-      title: heroTitleMarkup,
-      copy: 'Conta de Blox Fruits com God Human e nível máximo.',
-      action: 'Ver produto',
-    },
-    {
-      kicker: 'ENTREGA / MANUAL',
-      title: 'Entrega<br><strong>manual.</strong>',
-      copy: 'A equipe realiza a entrega após a confirmação do pagamento.',
-      action: 'Ver como funciona',
-    },
-    {
-      kicker: 'ESTOQUE / ATUALIZADO',
-      title: `Estoque<br><strong>${stockLabel}</strong>`,
-      copy: inStock ? 'Este produto está disponível para compra.' : 'Este produto está esgotado; o checkout não aceita pedidos enquanto o estoque estiver zerado.',
-      action: 'Ver disponibilidade',
-    },
-  ];
-  const slideMarkup = slides.map((slide, index) => `<article class="hero-slide ${index === 0 ? 'is-active' : ''}" data-hero-slide="${index}"><div class="slide-copy"><span class="slide-kicker">✦ ${slide.kicker}</span><h1>${slide.title}</h1><p>${slide.copy}</p><div class="slide-actions"><a class="button button-light" href="${productUrl}">${slide.action} ${icon('arrow', 16)}</a><span class="slide-meta">${String(index + 1).padStart(2, '0')} <i></i> ${String(slides.length).padStart(2, '0')}</span></div></div><div class="slide-art"><img class="hero-product-banner-image" src="${heroProduct.imageUrl || asset('/erynex-symbol.png')}" alt="${heroProduct.name}" loading="eager" /><span class="slide-art-label">${heroProduct.name} / ${money(heroProduct.price)} · ${stockLabel}</span></div></article>`).join('');
-  return `<div class="reference-home"><section class="reference-hero section-shell fullscreen-banner"><div class="hero-backdrop">${productVisual(heroProduct, true)}</div><div class="hero-carousel"><button class="hero-arrow hero-prev" type="button" aria-label="Slide anterior" data-hero-prev>‹</button><div class="hero-slides">${slideMarkup}</div><button class="hero-arrow hero-next" type="button" aria-label="Próximo slide" data-hero-next>›</button><div class="hero-dots">${slides.map((_, index) => `<button class="${index === 0 ? 'is-active' : ''}" data-hero-dot="${index}" aria-label="Slide ${index + 1}"></button>`).join('')}</div></div></section><section class="reference-section best-sellers section-shell"><div class="reference-section-head"><div><span class="section-kicker"><i></i> Blox Fruits / vitrine da loja</span><h2>Produto em destaque</h2></div><a href="${route('/shop')}" class="reference-link">Ver catálogo ${icon('arrow', 15)}</a></div><div class="reference-product-grid">${productCard(heroProduct)}</div></section><section class="reference-promo section-shell"><div><span class="section-kicker"><i></i> Estoque atualizado</span><h2>Confira antes<br><strong>de comprar.</strong></h2><p>A disponibilidade é mostrada na página do produto e conferida novamente no checkout.</p><a class="button button-light" href="${productUrl}">Ver produto ${icon('arrow', 16)}</a></div><div class="promo-symbol"><img src="${asset('/erynex-symbol.png')}" alt="Símbolo E Rynex" /></div></section><section class="newsletter section-shell reveal"><div><span class="section-kicker"><i></i> Stay in the loop</span><h2>Receba o sinal<br><em>antes de todo mundo.</em></h2></div><form id="newsletter"><input type="email" placeholder="seu@email.com" required /><button class="button button-light">Entrar na lista ${icon('arrow', 15)}</button></form><p class="form-note" id="newsletter-note">Sem spam. Só drops e ideias que merecem espaço.</p></section></div>`;
+  const heroProducts = products.filter(product => product.category.toLowerCase() === 'blox fruits').slice(0, 2);
+  if (!heroProducts.length && products[0]) heroProducts.push(products[0]);
+  const slides = heroProducts.map(product => {
+    const isGodHuman = String(product.id) === 'blox-god-human-max';
+    const stockLabel = product.stock == null ? 'CONFIRA ESTOQUE' : product.stock > 0 ? `${product.stock} DISPONÍVEIS` : 'ESGOTADO';
+    const stockCopy = product.stock == null
+      ? 'Consulte a disponibilidade na página do produto.'
+      : product.stock > 0
+        ? `${product.stock} unidades em estoque.`
+        : 'Sem estoque no momento.';
+    return {
+      product,
+      kicker: `BLOX FRUITS / ${isGodHuman ? 'CONTA DIGITAL' : 'RANDOM MÍTICA'}`,
+      title: isGodHuman ? heroTitleMarkup : 'Random<br><strong>1–3 Míticas</strong>',
+      copy: `${escapeHtml(product.description)} ${stockCopy}`,
+      stockLabel,
+    };
+  });
+  const slideMarkup = slides.map((slide, index) => `<article class="hero-slide ${index === 0 ? 'is-active' : ''}" data-hero-slide="${index}"><div class="slide-copy"><span class="slide-kicker">✦ ${slide.kicker}</span><h1>${slide.title}</h1><p>${slide.copy}</p><div class="slide-actions"><a class="button button-light" href="${route(`/product/${slide.product.id}`)}">Ver produto ${icon('arrow', 16)}</a><span class="slide-meta">${String(index + 1).padStart(2, '0')} <i></i> ${String(slides.length).padStart(2, '0')}</span></div></div><div class="slide-art"><img class="hero-product-banner-image" src="${escapeHtml(slide.product.imageUrl || asset('/erynex-symbol.png'))}" alt="${escapeHtml(slide.product.name)}" loading="eager" /><span class="slide-art-label">${escapeHtml(slide.product.name)} / ${money(slide.product.price)} · ${slide.stockLabel}</span></div></article>`).join('');
+  const backdropMarkup = slides.map((slide, index) => `<div class="hero-backdrop-slide ${index === 0 ? 'is-active' : ''}" data-hero-background="${index}" aria-hidden="true">${productVisual(slide.product, true)}</div>`).join('');
+  const productGrid = heroProducts.map((product, index) => productCard(product, index)).join('');
+  const promoTitle = heroProducts.length > 1 ? 'Dois drops<br><strong>de Blox Fruits.</strong>' : 'Encontre seu<br><strong>próximo drop.</strong>';
+  return `<div class="reference-home"><section class="reference-hero section-shell fullscreen-banner"><div class="hero-backdrop">${backdropMarkup}</div><div class="hero-carousel"><button class="hero-arrow hero-prev" type="button" aria-label="Slide anterior" data-hero-prev>‹</button><div class="hero-slides">${slideMarkup}</div><button class="hero-arrow hero-next" type="button" aria-label="Próximo slide" data-hero-next>›</button><div class="hero-dots">${slides.map((_, index) => `<button class="${index === 0 ? 'is-active' : ''}" data-hero-dot="${index}" aria-label="Slide ${index + 1}"></button>`).join('')}</div></div></section><section class="reference-section best-sellers section-shell"><div class="reference-section-head"><div><span class="section-kicker"><i></i> Blox Fruits / vitrine da loja</span><h2>Produtos em destaque</h2></div><a href="${route('/shop')}" class="reference-link">Ver catálogo ${icon('arrow', 15)}</a></div><div class="reference-product-grid">${productGrid}</div></section><section class="reference-promo section-shell"><div><span class="section-kicker"><i></i> Estoque atualizado</span><h2>${promoTitle}</h2><p>Preço e disponibilidade aparecem em cada produto e são conferidos novamente no checkout.</p><a class="button button-light" href="${route('/shop')}">Ver catálogo ${icon('arrow', 16)}</a></div><div class="promo-symbol"><img src="${asset('/erynex-symbol.png')}" alt="Símbolo E Rynex" /></div></section><section class="newsletter section-shell reveal"><div><span class="section-kicker"><i></i> Stay in the loop</span><h2>Receba o sinal<br><em>antes de todo mundo.</em></h2></div><form id="newsletter"><input type="email" placeholder="seu@email.com" required /><button class="button button-light">Entrar na lista ${icon('arrow', 15)}</button></form><p class="form-note" id="newsletter-note">Sem spam. Só drops e ideias que merecem espaço.</p></section></div>`;
 }
 function shopPage() {
   return `<section class="page-hero section-shell"><span class="section-kicker"><i></i> The E Rynex catalog / 04.26</span><h1>Todos os<br><span>sinais.</span></h1><p>Explore a coleção completa. Cada peça nasce para sair do ruído e entrar no seu ritmo.</p></section><section class="shop-section section-shell"><div class="catalog-toolbar"><p><strong id="result-count">${String(products.length).padStart(2, '0')}</strong> sinais encontrados</p><label class="search-field">${icon('search', 17)}<input id="search" type="search" placeholder="Buscar no catálogo..." /><span>/</span></label><button class="sort-button">Mais recentes ${icon('chevron', 15)}</button></div><div class="shop-layout"><aside class="shop-filters"><span class="eyebrow">Filtrar por frequência</span><button class="filter active" data-filter="All">Tudo <b>${String(products.length).padStart(2, '0')}</b></button>${categories.map(cat => `<button class="filter" data-filter="${cat.name}">${cat.name} <b>${cat.count.split(' ')[0]}</b></button>`).join('')}<div class="filter-note">DROP 04.26<br><span>O próximo sinal já está aqui.</span></div></aside><div><div class="products-grid" id="products-grid">${products.map(productCard).join('')}</div><div class="empty-state" id="empty-state"><span>${icon('search', 28)}</span><h3>Nenhum sinal encontrado</h3><p>Tente outra busca ou explore uma categoria diferente.</p><button class="text-link" data-clear-search>Limpar filtros ↗</button></div></div></div></section>`;
@@ -194,10 +206,10 @@ function productPage(product) {
   const related = products.filter(item => item.id !== product.id && item.category === product.category).slice(0, 3);
   const inStock = isProductInStock(product);
   const purchaseOptions = product.digital
-    ? '<div class="product-digital-note"><strong>Produto digital</strong><span>Conta de Blox Fruits</span></div>'
+    ? `<div class="product-digital-note"><strong>Produto digital</strong><span>${escapeHtml(product.tag || product.category)}</span></div>`
     : '<div class="option-group"><span>Selecione o tamanho</span><div class="options"><button class="option active">P</button><button class="option">M</button><button class="option">G</button><button class="option">GG</button></div></div>';
   const deliveryDetails = product.digital
-    ? '<span>⌁ Produto digital</span><span>↻ Entrega manual pela equipe</span><span>✦ Atendimento pelo pedido</span>'
+    ? `<span>⌁ Produto digital</span><span>↻ Entrega manual pela equipe</span><span>✦ Atendimento pelo pedido</span>${product.stock > 0 ? `<span class="product-stock-inline">✓ ${product.stock} unidades em estoque</span>` : ''}`
     : '<span>⌁ Envio em até 48h</span><span>↻ Troca fácil em 30 dias</span><span>✦ Drop limitado E Rynex</span>';
   const purchaseButton = inStock
     ? `<button class="button button-light full" data-add="${product.id}">Adicionar ao carrinho ${icon('arrow', 17)}</button>`
@@ -269,12 +281,14 @@ renderCartDrawer();
 $$('.reveal').forEach(el => new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('in-view'); }), { threshold: .05 }).observe(el));
 const heroSlides = $$('.hero-slide');
 const heroDots = $$('[data-hero-dot]');
+const heroBackgrounds = $$('[data-hero-background]');
 let heroIndex = 0;
 const setHeroSlide = (index) => {
   if (!heroSlides.length) return;
   heroIndex = (index + heroSlides.length) % heroSlides.length;
   heroSlides.forEach((slide, i) => slide.classList.toggle('is-active', i === heroIndex));
   heroDots.forEach((dot, i) => dot.classList.toggle('is-active', i === heroIndex));
+  heroBackgrounds.forEach((background, i) => background.classList.toggle('is-active', i === heroIndex));
 };
 $$('[data-hero-prev]').forEach(button => button.addEventListener('click', () => setHeroSlide(heroIndex - 1)));
 $$('[data-hero-next]').forEach(button => button.addEventListener('click', () => setHeroSlide(heroIndex + 1)));
