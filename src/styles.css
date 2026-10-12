@@ -387,3 +387,24 @@ body:after{display:none}
   .order-link-actions { font-size: 13px; }
   .order-link-actions .button { font-size: 12px; }
 }
+
+
+/* Order helper copy: use a clearer, warmer sans-serif instead of tiny mono labels. */
+.order-chat-head p,
+.order-summary,
+.order-link-actions,
+.order-note {
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0;
+  color: #c9c6d2;
+}
+.order-chat-head p { font-size: 15px; line-height: 1.7; }
+.order-summary { font-size: 15px; line-height: 1.65; }
+.order-link-actions { font-size: 14px; line-height: 1.6; }
+.order-link-actions .button { font-size: 13px; }
+.order-note { font-size: 14px; line-height: 1.7; }
+.order-status { font-family: 'DM Sans', sans-serif; font-size: 13px; letter-spacing: 0; }
+@media (max-width: 600px) {
+  .order-chat-head p, .order-summary { font-size: 15px; }
+  .order-link-actions, .order-note { font-size: 14px; }
+}
